@@ -22,6 +22,8 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, chore, docs |
 | [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | PR checklist template |
 | [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | Automate label creation via `gh` CLI |
+| [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | Full worked example of a filled-in CLAUDE.md |
+| [`examples/functional-spec-template.md`](examples/functional-spec-template.md) | Blank functional specification skeleton |
 
 ## Quick Start
 
