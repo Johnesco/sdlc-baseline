@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDLC Flow Visualization</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f6f8fa;
+    --bg-card: #ffffff;
+    --text: #1f2328;
+    --text-muted: #656d76;
+    --border: #d0d7de;
+    --accent: #0969da;
+    --accent-subtle: #ddf4ff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --bg-alt: #161b22;
+      --bg-card: #161b22;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-subtle: #1a2332;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 1.15rem; margin: 1.5rem 0 0.75rem; color: var(--accent); }
+  p, .desc { color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem; }
+  .subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .section { margin-bottom: 3rem; }
+  .mermaid-wrap { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1rem 0; overflow-x: auto; box-shadow: var(--shadow); }
+  .mermaid { text-align: center; }
+
+  /* Nav */
+  nav { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 2rem; }
+  nav a { color: var(--accent); text-decoration: none; margin-right: 1.5rem; font-size: 0.9rem; font-weight: 500; }
+  nav a:hover { text-decoration: underline; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th, td { padding: 0.6rem 0.8rem; text-align: left; border: 1px solid var(--border); }
+  th { background: var(--bg-alt); font-weight: 600; white-space: nowrap; }
+  tr:hover { background: var(--accent-subtle); }
+
+  /* Label chips */
+  .label-group { margin-bottom: 1.5rem; }
+  .label-group-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .labels-container { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .label-chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.75rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .label-chip .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .label-chip .label-desc { color: var(--text-muted); font-weight: 400; font-size: 0.75rem; margin-left: 0.3rem; }
+
+  /* Compression badges */
+  .compress-badge {
+    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.75rem; font-weight: 500; margin-left: 0.25rem;
+  }
+  .compress-full { background: #dafbe1; color: #1a7f37; }
+  .compress-partial { background: #fff8c5; color: #9a6700; }
+  .compress-na { background: #f6f8fa; color: #656d76; }
+  @media (prefers-color-scheme: dark) {
+    .compress-full { background: #1a3a2a; color: #56d364; }
+    .compress-partial { background: #3a2f1a; color: #e3b341; }
+    .compress-na { background: #21262d; color: #8b949e; }
+  }
+
+  /* Flow cards for supplemental flows */
+  .flow-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; box-shadow: var(--shadow); }
+  .flow-card h4 { margin-bottom: 0.5rem; }
+  .flow-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; font-size: 0.85rem; color: var(--text-muted); }
+  .flow-meta span { background: var(--bg-alt); padding: 0.2rem 0.6rem; border-radius: 4px; }
+
+  /* Diagram tab views */
+  .diagram-tabs { margin: 1rem 0; }
+  .tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; }
+  .tab-btn {
+    background: none; border: none; padding: 0.5rem 1rem; cursor: pointer;
+    font-size: 0.85rem; font-weight: 500; color: var(--text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: inherit;
+  }
+  .tab-btn:hover { color: var(--accent); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .tab-content.mermaid-wrap { border-top: none; border-radius: 0 0 8px 8px; }
+  .source-code {
+    background: var(--bg-alt); border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 1rem 1.25rem; overflow-x: auto;
+    font-size: 0.8rem; line-height: 1.5; white-space: pre; tab-size: 2;
+    color: var(--text);
+  }
+  .ascii-art {
+    background: var(--bg-alt); border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 1.25rem 1.5rem; overflow-x: auto;
+    font-size: 0.8rem; line-height: 1.6; white-space: pre; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    color: var(--text);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body { padding: 1rem; }
+    nav a { display: block; margin: 0.3rem 0; }
+    table { font-size: 0.8rem; }
+    .tab-btn { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>SDLC Flow Visualization</h1>
+<p class="subtitle">Interactive reference for the sdlc-baseline workflow. All diagrams are generated from the data object below — edit the data, refresh the page, diagrams update automatically.</p>
+
+<nav id="nav"></nav>
+
+<div id="content"></div>
+
+<script type="module">
+// ============================================================
+//  DATA OBJECT — Edit this section to update all visuals
+// ============================================================
+
+const DATA = {
+
+  // --- Workflow Steps ---
+  workflowSteps: [
+    { id: 'capture',   step: 1, name: 'Capture as a Ticket',      column: 'Backlog',     actor: 'PO / BA',       auto: false, description: 'Create a GitHub Issue before any other work begins. Include title, labels, acceptance criteria, milestone.' },
+    { id: 'review',    step: 2, name: 'Review Documentation',      column: 'Refining',    actor: 'BA / Dev',      auto: false, description: 'Read the spec, CLAUDE.md, and README for the affected area. Understand what exists and what will change.' },
+    { id: 'flag',      step: 3, name: 'Flag Discrepancies',        column: 'Refining',    actor: 'BA / Dev',      auto: false, description: 'If docs and code disagree, stop and flag the mismatch. The PO decides which is correct.' },
+    { id: 'refine',    step: 4, name: 'Refine the Ticket',         column: 'Ready',       actor: 'BA',            auto: false, description: 'Update the issue with doc impact, affected files, open questions, and final acceptance criteria.' },
+    { id: 'implement', step: 5, name: 'Implement the Change',      column: 'In Progress', actor: 'Dev',           auto: false, description: 'Write the code. Reference the ticket number in commits. Follow existing patterns.' },
+    { id: 'document',  step: 6, name: 'Update All Documentation',  column: 'In Progress', actor: 'Documenter',    auto: false, description: 'Update spec, CLAUDE.md, README.md. A change without doc updates is incomplete.' },
+    { id: 'verify',    step: 7, name: 'Verify Consistency',        column: 'Verify',      actor: 'QA (Human)',    auto: false, description: 'Human confirms code matches acceptance criteria, docs are accurate, no regressions.' },
+  ],
+
+  // --- Board Columns ---
+  boardColumns: [
+    { id: 'backlog',     name: 'Backlog',     purpose: 'Captured but not yet scoped',                       owner: 'PO' },
+    { id: 'refining',    name: 'Refining',    purpose: 'Defining scope and requirements',                   owner: 'BA' },
+    { id: 'ready',       name: 'Ready',       purpose: 'Acceptance criteria finalized, ready to build',     owner: 'BA' },
+    { id: 'in_progress', name: 'In Progress', purpose: 'Actively being coded',                              owner: 'Dev' },
+    { id: 'verify',      name: 'Verify',      purpose: 'Code complete, awaiting human testing',             owner: 'QA' },
+    { id: 'done',        name: 'Done',        purpose: 'Verified and accepted',                             owner: 'PO' },
+  ],
+
+  // --- Transitions ---
+  transitions: [
+    { from: 'Backlog',     to: 'Refining',     trigger: 'Start scoping/discussing the issue',   type: 'manual' },
+    { from: 'Refining',    to: 'Ready',        trigger: 'Acceptance criteria finalized',         type: 'manual' },
+    { from: 'Ready',       to: 'In Progress',  trigger: 'Coding begins',                        type: 'manual' },
+    { from: 'In Progress', to: 'Verify',       trigger: 'Code + docs complete, awaiting test',  type: 'manual' },
+    // Automations
+    { from: '(new item)',  to: 'Backlog',       trigger: 'Item added to project',               type: 'auto' },
+    { from: '(reopened)',  to: 'In Progress',   trigger: 'Item reopened',                        type: 'auto' },
+    { from: '(any)',       to: 'Done',          trigger: 'Item closed',                          type: 'auto' },
+    { from: '(any)',       to: 'Done',          trigger: 'Pull request merged',                  type: 'auto' },
+  ],
+
+  // --- Roles ---
+  roles: [
+    { id: 'po',          name: 'PO',          fullName: 'Product Owner',       owner: 'Human',               columns: ['Backlog', 'Done'],        canAI: false, keyRule: 'Decides priority, accepts work' },
+    { id: 'ba',          name: 'BA',          fullName: 'Business Analyst',    owner: 'Human or Claude',     columns: ['Refining', 'Ready'],      canAI: true,  keyRule: 'Scopes tickets, writes acceptance criteria' },
+    { id: 'dev',         name: 'Dev',         fullName: 'Developer',           owner: 'Claude (primary)',    columns: ['In Progress'],            canAI: true,  keyRule: 'Writes code, follows conventions' },
+    { id: 'documenter',  name: 'Documenter',  fullName: 'Documenter',          owner: 'Claude (with Dev)',   columns: ['In Progress'],            canAI: true,  keyRule: 'Updates spec, CLAUDE.md, README' },
+    { id: 'qa',          name: 'QA',          fullName: 'Quality Assurance',   owner: 'Human (always)',      columns: ['Verify'],                 canAI: false, keyRule: 'Verifies completed work — cannot self-verify' },
+  ],
+
+  // --- Issue Types ---
+  issueTypes: [
+    {
+      id: 'feature', name: 'Feature', label: 'feature', color: '#1d76db',
+      template: 'feature.yml', branchPrefix: 'feature/',
+      fields: ['Description', 'Current State', 'Acceptance Criteria', 'Test Plan', 'Size', 'Documentation Impact'],
+      compression: 'none',
+      compressionNote: 'Always full workflow — no compression allowed',
+      dod: [
+        'Code complete — feature works per acceptance criteria',
+        'Follows existing patterns',
+        'No regressions',
+        'Spec updated',
+        'CLAUDE.md updated',
+        'README.md updated (if user-facing)',
+        'Commit references ticket',
+        'Ready for human verification',
+      ],
+      status: 'base',
+    },
+    {
+      id: 'bug', name: 'Bug', label: 'bug', color: '#d73a4a',
+      template: 'bug.yml', branchPrefix: 'fix/',
+      fields: ['What\'s wrong?', 'Steps to Reproduce', 'Expected Behavior', 'Severity', 'Environment', 'Definition of Done'],
+      compression: 'partial',
+      compressionNote: 'Step 2 simplified, Steps 3-4 can compress into single comment',
+      dod: [
+        'Bug fixed — reported behavior no longer occurs',
+        'Root cause understood',
+        'No regressions',
+        'Spec updated (if behavior changed)',
+        'Commit references ticket',
+        'Ready for human verification',
+      ],
+      status: 'base',
+    },
+    {
+      id: 'docs', name: 'Documentation', label: 'docs', color: '#0075ca',
+      template: 'doc.yml', branchPrefix: 'docs/',
+      fields: ['Description', 'Affected Documents', 'Definition of Done'],
+      compression: 'partial',
+      compressionNote: 'Step 5 = "edit docs" instead of "write code". Step 6 is main deliverable.',
+      dod: [
+        'Content accurate — matches current code behavior',
+        'Consistent across docs — spec, CLAUDE.md, README agree',
+        'No broken links',
+        'Formatting correct',
+        'Commit references ticket',
+        'Ready for human review',
+      ],
+      status: 'base',
+    },
+    {
+      id: 'chore', name: 'Chore', label: 'chore', color: '#e4e669',
+      template: 'chore.yml', branchPrefix: 'chore/',
+      fields: ['Description', 'Rationale', 'Definition of Done'],
+      compression: 'partial',
+      compressionNote: 'Steps 2-4 can compress for obvious refactors. Still need ticket + verify.',
+      dod: [
+        'Change implemented',
+        'No regressions',
+        'No behavior changes (unless explicitly intended)',
+        'Documentation updated (if structure/setup changed)',
+        'Commit references ticket',
+        'Ready for human verification',
+      ],
+      status: 'base',
+    },
+    {
+      id: 'spike', name: 'Spike', label: 'spike', color: '#d4c5f9',
+      template: '(proposed)', branchPrefix: 'spike/',
+      fields: ['Research Question', 'Time Box', 'Output Format', 'Decision Criteria'],
+      compression: 'full',
+      compressionNote: 'Steps 5-6 become "document findings." No code deliverable required.',
+      dod: [
+        'Research question answered',
+        'Findings documented in issue or doc',
+        'Recommendation provided',
+        'Time box respected',
+        'Follow-up tickets created if needed',
+      ],
+      status: 'proposed',
+    },
+    {
+      id: 'config', name: 'Config', label: 'config', color: '#f9d0c4',
+      template: 'config.yml (proposed)', branchPrefix: 'config/',
+      fields: ['Description', 'Affected Config Files', 'Rollback Plan'],
+      compression: 'partial',
+      compressionNote: 'Steps 2-4 compress for straightforward config changes.',
+      dod: [
+        'Config change applied',
+        'No regressions',
+        'Documentation updated',
+        'Rollback plan noted',
+        'Commit references ticket',
+        'Ready for human verification',
+      ],
+      status: 'proposed',
+    },
+  ],
+
+  // --- Labels ---
+  labels: [
+    // Type
+    { name: 'feature',        color: '#1d76db', category: 'type',     description: 'New functionality or enhancement' },
+    { name: 'bug',            color: '#d73a4a', category: 'type',     description: 'Something isn\'t working correctly' },
+    { name: 'docs',           color: '#0075ca', category: 'type',     description: 'Documentation-only changes' },
+    { name: 'chore',          color: '#e4e669', category: 'type',     description: 'Refactors, dependencies, tooling, infrastructure' },
+    { name: 'spike',          color: '#d4c5f9', category: 'type',     description: 'Research / investigation (proposed)' },
+    { name: 'config',         color: '#f9d0c4', category: 'type',     description: 'Configuration changes (proposed)' },
+    // Area
+    { name: 'area:frontend',  color: '#c5def5', category: 'area',     description: 'UI components, views, styles' },
+    { name: 'area:backend',   color: '#bfdadc', category: 'area',     description: 'Server, API, database' },
+    { name: 'area:data',      color: '#d4c5f9', category: 'area',     description: 'Data model, schema, migrations' },
+    { name: 'area:docs',      color: '#fef2c0', category: 'area',     description: 'Documentation files' },
+    { name: 'area:infra',     color: '#f9d0c4', category: 'area',     description: 'CI/CD, deployment, tooling' },
+    { name: 'area:testing',   color: '#e6e6e6', category: 'area',     description: 'Tests, test infrastructure' },
+    { name: 'area:design',    color: '#fbca04', category: 'area',     description: 'UI/UX design, styling' },
+    // Priority
+    { name: 'priority:high',  color: '#b60205', category: 'priority', description: 'Must be addressed soon' },
+    { name: 'priority:low',   color: '#c2e0c6', category: 'priority', description: 'Nice to have, no urgency' },
+    // Flow
+    { name: 'duplicate',      color: '#cfd3d7', category: 'flow',     description: 'Issue is a duplicate of an existing one' },
+    { name: 'wontfix',        color: '#ffffff', category: 'flow',     description: 'Issue is declined or will not be addressed' },
+    { name: 'blocked',        color: '#b60205', category: 'flow',     description: 'Issue is blocked by an external dependency' },
+    { name: 'hotfix',         color: '#d73a4a', category: 'flow',     description: 'Emergency fix requiring expedited process' },
+    { name: 'needs-split',    color: '#fbca04', category: 'flow',     description: 'Issue is too large and needs decomposition' },
+    { name: 'rework',         color: '#e4e669', category: 'flow',     description: 'Sent back from Verify for corrections' },
+  ],
+
+  // --- Supplemental Flows ---
+  supplementalFlows: [
+    {
+      id: 'duplicate',
+      name: 'Duplicate Detection',
+      description: 'When a new issue is identified as a duplicate of an existing one.',
+      actors: ['PO', 'BA'],
+      labels: ['duplicate'],
+      steps: ['New issue created', 'Reviewer finds existing issue covering same scope', 'Link to original in comment', 'Label as duplicate', 'Close the duplicate'],
+      mermaid: `flowchart TD
+    A["New Issue Created"] --> B{"Existing issue<br/>covers this?"}
+    B -- No --> C["Proceed with<br/>normal workflow"]
+    B -- Yes --> D["Comment: link<br/>to original issue"]
+    D --> E["Add label:<br/>duplicate"]
+    E --> F["Close issue"]
+    F --> G["Done<br/>(auto)"]
+    style A fill:#ddf4ff,stroke:#0969da
+    style G fill:#dafbe1,stroke:#1a7f37
+    style E fill:#cfd3d7,stroke:#656d76`
+    },
+    {
+      id: 'wontfix',
+      name: "Won't-Fix / Declined",
+      description: 'When the PO decides an issue will not be addressed.',
+      actors: ['PO'],
+      labels: ['wontfix'],
+      steps: ['Issue exists in Backlog or Refining', 'PO decides not to pursue', 'Add rationale comment', 'Label as wontfix', 'Close the issue'],
+      mermaid: `flowchart TD
+    A["Issue in Backlog<br/>or Refining"] --> B{"PO reviews"}
+    B -- Proceed --> C["Normal workflow"]
+    B -- Decline --> D["Comment:<br/>rationale for declining"]
+    D --> E["Add label:<br/>wontfix"]
+    E --> F["Close issue"]
+    F --> G["Done<br/>(auto)"]
+    style A fill:#ddf4ff,stroke:#0969da
+    style G fill:#dafbe1,stroke:#1a7f37
+    style E fill:#ffffff,stroke:#656d76`
+    },
+    {
+      id: 'splitting',
+      name: 'Ticket Splitting',
+      description: 'When an issue is too large and needs to be broken into smaller, deliverable pieces.',
+      actors: ['BA', 'PO'],
+      labels: ['needs-split'],
+      steps: ['Issue identified as too large during Refining', 'Label as needs-split', 'BA creates child issues', 'Link children to parent', 'Close or convert parent to tracking issue'],
+      mermaid: `flowchart TD
+    A["Issue in Refining"] --> B{"Too large?"}
+    B -- No --> C["Continue to Ready"]
+    B -- Yes --> D["Add label:<br/>needs-split"]
+    D --> E["BA creates<br/>child issues"]
+    E --> F["Link children<br/>to parent"]
+    F --> G{"Keep parent<br/>as tracker?"}
+    G -- Yes --> H["Parent becomes<br/>tracking issue"]
+    G -- No --> I["Close parent"]
+    style A fill:#ddf4ff,stroke:#0969da
+    style D fill:#fbca04,stroke:#9a6700
+    style H fill:#dafbe1,stroke:#1a7f37`
+    },
+    {
+      id: 'hotfix',
+      name: 'Hotfix / Emergency',
+      description: 'When a critical or high-severity bug requires an expedited fix cycle.',
+      actors: ['PO', 'Dev', 'QA'],
+      labels: ['hotfix', 'priority:high', 'bug'],
+      steps: ['Critical bug reported', 'Create issue with hotfix + priority:high labels', 'Skip Refining — go straight to In Progress', 'Fix, commit, PR', 'Expedited QA in Verify', 'Merge and deploy', 'Backfill documentation after'],
+      mermaid: `flowchart TD
+    A["Critical Bug<br/>Reported"] --> B["Create issue:<br/>bug + hotfix +<br/>priority:high"]
+    B --> C["Skip Refining<br/>to In Progress"]
+    C --> D["Dev: fix + commit<br/>+ open PR"]
+    D --> E["Expedited QA<br/>in Verify"]
+    E --> F{"Passes?"}
+    F -- Yes --> G["Merge + Deploy"]
+    F -- No --> D
+    G --> H["Backfill docs<br/>if needed"]
+    H --> I["Done"]
+    style A fill:#ffebe9,stroke:#d73a4a
+    style B fill:#ffebe9,stroke:#d73a4a
+    style C fill:#fff8c5,stroke:#9a6700
+    style I fill:#dafbe1,stroke:#1a7f37`
+    },
+    {
+      id: 'rework',
+      name: 'Rejection / Rework Loop',
+      description: 'When QA sends work back from Verify because it does not meet acceptance criteria.',
+      actors: ['QA', 'Dev'],
+      labels: ['rework'],
+      steps: ['Issue is in Verify column', 'QA finds problems', 'QA comments with specific failures', 'Add rework label', 'Move back to In Progress', 'Dev fixes issues', 'Return to Verify'],
+      mermaid: `flowchart TD
+    A["Issue in<br/>Verify"] --> B{"QA review"}
+    B -- Pass --> C["Close issue<br/>to Done"]
+    B -- Fail --> D["QA comments:<br/>specific failures"]
+    D --> E["Add label:<br/>rework"]
+    E --> F["Move to<br/>In Progress"]
+    F --> G["Dev fixes<br/>issues"]
+    G --> H["Remove rework<br/>label"]
+    H --> I["Move back<br/>to Verify"]
+    I --> B
+    style A fill:#ddf4ff,stroke:#0969da
+    style C fill:#dafbe1,stroke:#1a7f37
+    style D fill:#ffebe9,stroke:#d73a4a
+    style E fill:#e4e669,stroke:#9a6700`
+    },
+    {
+      id: 'release',
+      name: 'Release Management',
+      description: 'Shipping a set of completed issues as a versioned release.',
+      actors: ['PO', 'Dev'],
+      labels: [],
+      steps: ['All milestone issues in Done', 'Create release branch (if needed)', 'Final verification pass', 'Tag release', 'Update changelog/README', 'Deploy', 'Close milestone'],
+      mermaid: `flowchart TD
+    A["All milestone<br/>issues Done"] --> B["Final verification<br/>pass"]
+    B --> C{"All clear?"}
+    C -- No --> D["Fix remaining<br/>issues"]
+    D --> B
+    C -- Yes --> E["Tag release<br/>(git tag)"]
+    E --> F["Update changelog<br/>/ README"]
+    F --> G["Deploy"]
+    G --> H["Close milestone"]
+    style A fill:#ddf4ff,stroke:#0969da
+    style E fill:#ddf4ff,stroke:#0969da
+    style G fill:#dafbe1,stroke:#1a7f37
+    style H fill:#dafbe1,stroke:#1a7f37`
+    },
+    {
+      id: 'retro',
+      name: 'Retrospective',
+      description: 'Periodic review of what went well, what did not, and process improvements to carry forward.',
+      actors: ['PO', 'BA', 'Dev', 'QA'],
+      labels: [],
+      steps: ['Milestone or sprint completed', 'Review completed issues for friction', 'Identify workflow improvements', 'Create chore/docs issues for improvements', 'Update process docs if universal', 'Upstream to sdlc-baseline if applicable'],
+      mermaid: `flowchart TD
+    A["Milestone or<br/>Sprint Complete"] --> B["Review completed<br/>issues"]
+    B --> C["Identify:<br/>what went well"]
+    B --> D["Identify:<br/>what had friction"]
+    C --> E["Document<br/>patterns to keep"]
+    D --> F["Create improvement<br/>issues (chore/docs)"]
+    F --> G{"Universal<br/>improvement?"}
+    G -- Yes --> H["Upstream to<br/>sdlc-baseline"]
+    G -- No --> I["Project-specific<br/>backlog"]
+    style A fill:#ddf4ff,stroke:#0969da
+    style H fill:#d4c5f9,stroke:#8250df
+    style I fill:#dafbe1,stroke:#1a7f37`
+    },
+  ],
+
+  // --- Severity Matrix ---
+  severityMatrix: [
+    { level: 'Critical', priorityLabel: 'priority:high', response: 'Fix immediately — drop everything',      examples: 'App won\'t load, data corruption, security vulnerability' },
+    { level: 'High',     priorityLabel: 'priority:high', response: 'Fix before new features',                 examples: 'Search returns no results, login fails, form can\'t submit' },
+    { level: 'Medium',   priorityLabel: '(none)',        response: 'Normal backlog order',                    examples: 'Filter resets on page change, slow load, broken mobile layout' },
+    { level: 'Low',      priorityLabel: 'priority:low',  response: 'Fix when convenient',                     examples: 'Typo in UI, slight misalignment, wrong tooltip text' },
+  ],
+};
+
+
+// ============================================================
+//  RENDER FUNCTIONS — These generate HTML from the data above.
+//  You should not need to edit below this line.
+// ============================================================
+
+let diagramCounter = 0;
+
+function esc(str) {
+  const el = document.createElement('span');
+  el.textContent = str;
+  return el.innerHTML;
+}
+
+function escMmd(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getContrastColor(hex) {
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#1f2328' : '#ffffff';
+}
+
+// --- Tab system ---
+
+window.switchTab = function(id, tab) {
+  ['chart', 'source', 'ascii'].forEach(t => {
+    const el = document.getElementById(id + '-' + t);
+    const btn = document.getElementById(id + '-btn-' + t);
+    if (el) el.classList.toggle('active', t === tab);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+};
+
+function wrapDiagram(mermaidCode, asciiText) {
+  const id = 'dia-' + (diagramCounter++);
+  return `<div class="diagram-tabs">
+  <div class="tab-bar">
+    <button id="${id}-btn-chart" class="tab-btn active" onclick="switchTab('${id}','chart')">Chart</button>
+    <button id="${id}-btn-source" class="tab-btn" onclick="switchTab('${id}','source')">Mermaid Source</button>
+    <button id="${id}-btn-ascii" class="tab-btn" onclick="switchTab('${id}','ascii')">ASCII</button>
+  </div>
+  <div id="${id}-chart" class="tab-content active mermaid-wrap"><pre class="mermaid">${mermaidCode}</pre></div>
+  <div id="${id}-source" class="tab-content"><pre class="source-code"><code>${escMmd(mermaidCode)}</code></pre></div>
+  <div id="${id}-ascii" class="tab-content"><pre class="ascii-art">${asciiText}</pre></div>
+</div>`;
+}
+
+// ============================================================
+//  ASCII GENERATORS
+// ============================================================
+
+function asciiWorkflowBoard(colSteps) {
+  const W = 62;
+  const hr = '+' + '-'.repeat(W) + '+';
+  let out = '';
+  out += '  SDLC WORKFLOW ──► BOARD COLUMN ALIGNMENT\n';
+  out += '  =========================================\n\n';
+
+  DATA.boardColumns.forEach((col, ci) => {
+    const steps = colSteps[col.name] || [];
+    const header = ` ${col.name} (${col.owner}) `;
+    const padded = header.padEnd(W, ' ');
+    out += '  ' + hr + '\n';
+    out += '  |' + padded + '|\n';
+    out += '  |' + '-'.repeat(W) + '|\n';
+    if (col.name === 'Done') {
+      const line = '  Issue Closed'.padEnd(W, ' ');
+      out += '  |' + line + '|\n';
+    } else if (steps.length === 0) {
+      out += '  |' + ' (no workflow steps in this column)'.padEnd(W, ' ') + '|\n';
+    }
+    steps.forEach(s => {
+      const line = `  [${s.step}] ${s.name}`;
+      const actor = s.actor;
+      const gap = W - line.length - actor.length - 2;
+      out += '  |' + line + ' '.repeat(Math.max(gap, 1)) + actor + '  |\n';
+    });
+    out += '  ' + hr + '\n';
+    if (ci < DATA.boardColumns.length - 1) {
+      out += '         |\n';
+      out += '         v\n';
+    }
+  });
+
+  out += '\n  Transitions:\n';
+  DATA.transitions.forEach(t => {
+    const arrow = t.type === 'auto' ? '==>' : '-->';
+    out += `    ${t.from.padEnd(14)} ${arrow} ${t.to.padEnd(14)}  (${t.trigger})\n`;
+  });
+  return out;
+}
+
+function asciiIssueFlow(type, compressedSteps) {
+  let out = '';
+  const label = type.compression === 'none' ? 'FULL WORKFLOW'
+    : type.compression === 'partial' ? 'PARTIAL COMPRESSION'
+    : 'HEAVY COMPRESSION';
+  out += `  ${type.name.toUpperCase()} FLOW  [${label}]\n`;
+  out += '  ' + '='.repeat(40 + label.length) + '\n\n';
+
+  DATA.workflowSteps.forEach((s, i) => {
+    const isComp = compressedSteps.includes(s.step);
+    const marker = isComp ? ' ~~ compressible' : '';
+    const box = `[${s.step}] ${s.name}`;
+    out += `    ${box}${marker}\n`;
+    if (i < DATA.workflowSteps.length - 1) {
+      out += '      |\n      v\n';
+    }
+  });
+  out += '      |\n      v\n';
+  out += '    [Done]\n';
+
+  if (compressedSteps.length > 0) {
+    out += `\n  ~~ = Steps ${compressedSteps.join(', ')} can be shortened.\n`;
+    out += `       ${type.compressionNote}\n`;
+  }
+  return out;
+}
+
+function asciiSupplementalFlow(flow) {
+  let out = '';
+  const title = flow.name.toUpperCase();
+  out += `  ${title}\n`;
+  out += '  ' + '='.repeat(title.length) + '\n\n';
+  if (flow.actors.length) out += `  Actors: ${flow.actors.join(', ')}\n`;
+  if (flow.labels.length) out += `  Labels: ${flow.labels.join(', ')}\n`;
+  out += '\n';
+
+  flow.steps.forEach((step, i) => {
+    const num = `(${i + 1})`;
+    out += `    ${num} ${step}\n`;
+    if (i < flow.steps.length - 1) {
+      out += '         |\n         v\n';
+    }
+  });
+  out += '\n';
+  return out;
+}
+
+function asciiRoles() {
+  let out = '';
+  out += '  ROLE ──► BOARD COLUMN OWNERSHIP\n';
+  out += '  ================================\n\n';
+
+  const maxName = Math.max(...DATA.roles.map(r => r.name.length));
+  const maxOwner = Math.max(...DATA.roles.map(r => r.owner.length));
+
+  DATA.roles.forEach(r => {
+    const cols = r.columns.join(', ');
+    const ai = r.canAI ? 'AI: Yes' : 'AI: No ';
+    out += `    ${r.name.padEnd(maxName)}  (${r.owner.padEnd(maxOwner)})  --> ${cols.padEnd(22)}  ${ai}\n`;
+  });
+
+  out += '\n  Key rule: QA (Human) owns Verify.\n';
+  out += '  The person or AI that wrote the code CANNOT verify it.\n';
+  return out;
+}
+
+// ============================================================
+//  SECTION RENDERERS
+// ============================================================
+
+function renderNav() {
+  const sections = [
+    { id: 'workflow-board', label: 'Workflow \u2194 Board' },
+    { id: 'issue-flows', label: 'Issue Type Flows' },
+    { id: 'supplemental', label: 'Supplemental Flows' },
+    { id: 'type-matrix', label: 'Issue Type Matrix' },
+    { id: 'labels', label: 'Label Taxonomy' },
+    { id: 'severity', label: 'Severity Matrix' },
+    { id: 'roles', label: 'Roles' },
+  ];
+  document.getElementById('nav').innerHTML = sections.map(s =>
+    `<a href="#${s.id}">${s.label}</a>`
+  ).join('');
+}
+
+function renderWorkflowBoard() {
+  const colSteps = {};
+  DATA.boardColumns.forEach(c => { colSteps[c.name] = []; });
+  DATA.workflowSteps.forEach(s => {
+    if (colSteps[s.column]) colSteps[s.column].push(s);
+  });
+
+  let mmd = 'flowchart LR\n';
+  DATA.boardColumns.forEach(col => {
+    const steps = colSteps[col.name];
+    const sgId = 'sg_' + col.id;
+    mmd += `  subgraph ${sgId}["${col.name} (${esc(col.owner)})"]\n`;
+    if (col.name === 'Done') {
+      mmd += `    done_end["Issue Closed"]\n`;
+    } else if (steps.length === 0) {
+      mmd += `    ${sgId}_empty[" "]\n`;
+    }
+    steps.forEach(s => {
+      mmd += `    ${s.id}["Step ${s.step}: ${s.name}"]\n`;
+    });
+    mmd += `  end\n`;
+  });
+  mmd += `  style done_end fill:#dafbe1,stroke:#1a7f37\n`;
+  for (let i = 0; i < DATA.workflowSteps.length - 1; i++) {
+    mmd += `  ${DATA.workflowSteps[i].id} --> ${DATA.workflowSteps[i + 1].id}\n`;
+  }
+  mmd += `  ${DATA.workflowSteps[DATA.workflowSteps.length - 1].id} --> done_end\n`;
+
+  // Tables
+  const manualT = DATA.transitions.filter(t => t.type === 'manual');
+  const autoT = DATA.transitions.filter(t => t.type === 'auto');
+  let transTable = `<h3>Transitions</h3><table>
+<tr><th>From</th><th>To</th><th>Trigger</th><th>Type</th></tr>`;
+  manualT.forEach(t => {
+    transTable += `<tr><td>${esc(t.from)}</td><td>${esc(t.to)}</td><td>${esc(t.trigger)}</td><td>Manual</td></tr>`;
+  });
+  autoT.forEach(t => {
+    transTable += `<tr><td>${esc(t.from)}</td><td>${esc(t.to)}</td><td>${esc(t.trigger)}</td><td style="color:var(--accent);font-weight:600">Auto</td></tr>`;
+  });
+  transTable += '</table>';
+
+  let stepsTable = `<h3>Step Details</h3><table>
+<tr><th>#</th><th>Step</th><th>Board Column</th><th>Actor</th><th>Description</th></tr>`;
+  DATA.workflowSteps.forEach(s => {
+    stepsTable += `<tr><td>${s.step}</td><td>${esc(s.name)}</td><td>${esc(s.column)}</td><td>${esc(s.actor)}</td><td>${esc(s.description)}</td></tr>`;
+  });
+  stepsTable += '</table>';
+
+  return `<div class="section" id="workflow-board">
+<h2>Section 1: Workflow \u2194 Board Column Alignment</h2>
+<p>The 7 workflow steps mapped to the 6 board columns. Each column is owned by a specific role.</p>
+${wrapDiagram(mmd, asciiWorkflowBoard(colSteps))}
+${stepsTable}
+${transTable}
+</div>`;
+}
+
+function renderIssueFlows() {
+  let html = `<div class="section" id="issue-flows">
+<h2>Section 2: Issue Type Flows</h2>
+<p>How each issue type flows through the board, including which steps can be compressed.</p>`;
+
+  DATA.issueTypes.forEach(type => {
+    const proposed = type.status === 'proposed' ? ' (Proposed)' : '';
+    let mmd = 'flowchart LR\n';
+
+    const compressedSteps = [];
+    if (type.id === 'bug') compressedSteps.push(2, 3, 4);
+    if (type.id === 'docs') compressedSteps.push(5);
+    if (type.id === 'chore') compressedSteps.push(2, 3, 4);
+    if (type.id === 'spike') compressedSteps.push(5, 6);
+    if (type.id === 'config') compressedSteps.push(2, 3, 4);
+
+    DATA.workflowSteps.forEach(s => {
+      const isCompressed = compressedSteps.includes(s.step);
+      const nodeLabel = `Step ${s.step}:<br/>${s.name}`;
+      if (isCompressed) {
+        mmd += `  s${s.step}["${nodeLabel}<br/>(compressible)"]:::compressed\n`;
+      } else {
+        mmd += `  s${s.step}["${nodeLabel}"]:::normal\n`;
+      }
+    });
+    for (let i = 1; i < DATA.workflowSteps.length; i++) {
+      mmd += `  s${i} --> s${i + 1}\n`;
+    }
+    mmd += `  s7 --> done_${type.id}["Done"]\n`;
+    mmd += `  classDef compressed fill:#fff8c5,stroke:#9a6700\n`;
+    mmd += `  classDef normal fill:#ddf4ff,stroke:#0969da\n`;
+    mmd += `  style done_${type.id} fill:#dafbe1,stroke:#1a7f37\n`;
+
+    let badge = '';
+    if (type.compression === 'none') badge = '<span class="compress-badge compress-full">Full workflow required</span>';
+    else if (type.compression === 'partial') badge = '<span class="compress-badge compress-partial">Some steps compressible</span>';
+    else if (type.compression === 'full') badge = '<span class="compress-badge compress-na">Heavy compression</span>';
+
+    const dodHtml = type.dod.map(d => `<li>${esc(d)}</li>`).join('');
+
+    html += `<div class="flow-card">
+<h4><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${type.color};margin-right:6px;vertical-align:middle;"></span>${esc(type.name)}${proposed} ${badge}</h4>
+<p class="desc">${esc(type.compressionNote)}</p>
+${wrapDiagram(mmd, asciiIssueFlow(type, compressedSteps))}
+<h4 style="margin-top:1rem;">Definition of Done (${type.dod.length} items)</h4>
+<ol style="margin:0.5rem 0 0 1.25rem;font-size:0.9rem;">${dodHtml}</ol>
+</div>`;
+  });
+
+  html += '</div>';
+  return html;
+}
+
+function renderSupplementalFlows() {
+  let html = `<div class="section" id="supplemental">
+<h2>Section 3: Supplemental Flows</h2>
+<p>Flows for special situations that branch off from or augment the main workflow.</p>`;
+
+  DATA.supplementalFlows.forEach(flow => {
+    const labelsHtml = flow.labels.length > 0
+      ? flow.labels.map(l => {
+          const label = DATA.labels.find(lb => lb.name === l);
+          const color = label ? label.color : '#ccc';
+          return `<span style="background:${color};color:${getContrastColor(color)};padding:0.15rem 0.5rem;border-radius:2rem;font-size:0.75rem;font-weight:500;">${esc(l)}</span>`;
+        }).join(' ')
+      : '<span style="color:var(--text-muted);font-size:0.8rem;">none</span>';
+
+    html += `<div class="flow-card">
+<h4>${esc(flow.name)}</h4>
+<p class="desc">${esc(flow.description)}</p>
+<div class="flow-meta">
+  <span>Actors: ${flow.actors.join(', ')}</span>
+  <span>Labels: ${labelsHtml}</span>
+</div>
+${wrapDiagram(flow.mermaid, asciiSupplementalFlow(flow))}
+</div>`;
+  });
+
+  html += '</div>';
+  return html;
+}
+
+function renderTypeMatrix() {
+  let html = `<div class="section" id="type-matrix">
+<h2>Section 4: Issue Type Matrix</h2>
+<p>All issue types at a glance — current types and proposed additions.</p>
+<table>
+<tr>
+  <th>Type</th><th>Label</th><th>Template</th><th>Branch Prefix</th>
+  <th>Unique Fields</th><th>DoD Items</th><th>Compression</th><th>Status</th>
+</tr>`;
+
+  DATA.issueTypes.forEach(type => {
+    const statusBadge = type.status === 'proposed'
+      ? '<span style="color:#9a6700;font-weight:600;">Proposed</span>'
+      : '<span style="color:#1a7f37;font-weight:600;">Base</span>';
+    html += `<tr>
+  <td><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${type.color};margin-right:4px;vertical-align:middle;"></span>${esc(type.name)}</td>
+  <td><code>${esc(type.label)}</code></td>
+  <td><code>${esc(type.template)}</code></td>
+  <td><code>${esc(type.branchPrefix)}</code></td>
+  <td style="font-size:0.8rem;">${type.fields.map(f => esc(f)).join(', ')}</td>
+  <td style="text-align:center;">${type.dod.length}</td>
+  <td>${type.compression === 'none' ? 'None' : type.compression === 'partial' ? 'Partial' : 'Heavy'}</td>
+  <td>${statusBadge}</td>
+</tr>`;
+  });
+
+  html += '</table></div>';
+  return html;
+}
+
+function renderLabels() {
+  const categories = [
+    { key: 'type', title: 'Type Labels', desc: 'Every issue gets exactly one type label.' },
+    { key: 'area', title: 'Area Labels', desc: 'One or more area labels to indicate which part of the codebase is affected.' },
+    { key: 'priority', title: 'Priority Labels', desc: 'At most one. No label = normal priority.' },
+    { key: 'flow', title: 'Flow Labels', desc: 'Applied during supplemental flows (duplicate, wontfix, rework, etc.).' },
+  ];
+
+  let html = `<div class="section" id="labels">
+<h2>Section 5: Label Taxonomy</h2>
+<p>All labels grouped by category. Total: ${DATA.labels.length} labels.</p>`;
+
+  categories.forEach(cat => {
+    const labels = DATA.labels.filter(l => l.category === cat.key);
+    const chipsHtml = labels.map(l => {
+      const textColor = getContrastColor(l.color);
+      return `<span class="label-chip" style="background:${l.color};color:${textColor};">
+        ${esc(l.name)}
+        <span class="label-desc" style="color:${textColor}aa;">${esc(l.description)}</span>
+      </span>`;
+    }).join('');
+
+    html += `<div class="label-group">
+<div class="label-group-title">${esc(cat.title)} <span style="font-weight:400;color:var(--text-muted);font-size:0.85rem;">(${labels.length})</span></div>
+<p class="desc" style="margin-bottom:0.5rem;">${esc(cat.desc)}</p>
+<div class="labels-container">${chipsHtml}</div>
+</div>`;
+  });
+
+  html += '</div>';
+  return html;
+}
+
+function renderSeverityMatrix() {
+  let html = `<div class="section" id="severity">
+<h2>Section 6: Severity & Priority Matrix</h2>
+<p>Bug severity maps to priority labels. The PO can override the default mapping when business context warrants it.</p>
+<table>
+<tr><th>Severity</th><th>Default Priority</th><th>Response</th><th>Examples</th></tr>`;
+
+  DATA.severityMatrix.forEach(s => {
+    html += `<tr>
+<td><strong>${esc(s.level)}</strong></td>
+<td><code>${esc(s.priorityLabel)}</code></td>
+<td>${esc(s.response)}</td>
+<td style="font-size:0.85rem;color:var(--text-muted);">${esc(s.examples)}</td>
+</tr>`;
+  });
+
+  html += '</table></div>';
+  return html;
+}
+
+function renderRoles() {
+  let mmd = 'flowchart LR\n';
+  DATA.roles.forEach(r => {
+    r.columns.forEach(col => {
+      mmd += `  ${r.id}["${r.name}<br/><small>${esc(r.owner)}</small>"] --> col_${col.replace(/\s/g, '_')}["${col}"]\n`;
+    });
+  });
+  mmd += `  style po fill:#ddf4ff,stroke:#0969da\n`;
+  mmd += `  style ba fill:#d4c5f9,stroke:#8250df\n`;
+  mmd += `  style dev fill:#dafbe1,stroke:#1a7f37\n`;
+  mmd += `  style documenter fill:#dafbe1,stroke:#1a7f37\n`;
+  mmd += `  style qa fill:#ffebe9,stroke:#d73a4a\n`;
+
+  let html = `<div class="section" id="roles">
+<h2>Section 7: Roles & Ownership</h2>
+<p>Which roles own which board columns. The most important rule: Claude cannot QA its own work.</p>
+${wrapDiagram(mmd, asciiRoles())}
+<table>
+<tr><th>Role</th><th>Full Name</th><th>Typical Owner</th><th>Board Columns</th><th>AI Capable?</th><th>Key Rule</th></tr>`;
+
+  DATA.roles.forEach(r => {
+    const aiCell = r.canAI
+      ? '<span style="color:#1a7f37;font-weight:600;">Yes</span>'
+      : '<span style="color:#d73a4a;font-weight:600;">No</span>';
+    html += `<tr>
+<td><strong>${esc(r.name)}</strong></td>
+<td>${esc(r.fullName)}</td>
+<td>${esc(r.owner)}</td>
+<td>${r.columns.join(', ')}</td>
+<td>${aiCell}</td>
+<td>${esc(r.keyRule)}</td>
+</tr>`;
+  });
+
+  html += '</table></div>';
+  return html;
+}
+
+// --- Main Render ---
+
+function renderAll() {
+  renderNav();
+  document.getElementById('content').innerHTML = [
+    renderWorkflowBoard(),
+    renderIssueFlows(),
+    renderSupplementalFlows(),
+    renderTypeMatrix(),
+    renderLabels(),
+    renderSeverityMatrix(),
+    renderRoles(),
+  ].join('');
+}
+
+renderAll();
+
+// --- Load Mermaid and render diagrams ---
+
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
+script.onload = () => {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: isDark ? 'dark' : 'default',
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    securityLevel: 'loose',
+  });
+  mermaid.run();
+};
+document.head.appendChild(script);
+</script>
+</body>
+</html>
