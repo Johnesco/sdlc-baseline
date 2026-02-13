@@ -111,6 +111,24 @@ document.addEventListener('note:selected', (e) => loadNote(e.detail.id));
 
 ## Instructions for Claude
 
+### Roles and Responsibilities
+
+| Role | Owner | Board Columns | Key Rule |
+|------|-------|---------------|----------|
+| **PO** (Product Owner) | Human | Backlog, Done | Decides priority, accepts work |
+| **BA** (Business Analyst) | Human or Claude | Refining, Ready | Scopes tickets, writes acceptance criteria |
+| **Dev** (Developer) | Claude (primary) | In Progress | Writes code, follows conventions |
+| **Documenter** | Claude (bundled with Dev) | In Progress | Updates spec, CLAUDE.md, README |
+| **QA** (Quality Assurance) | **Human (always)** | **Verify** | Verifies completed work |
+
+> **The most important rule: Claude cannot QA its own work.** The Verify column is always human-owned. The person or AI that wrote the code is not qualified to verify it.
+
+**Hat-switch protocol:** When working with Claude, explicitly state which role you're in to keep the interaction predictable:
+- `"PO hat — let's prioritize the backlog."`
+- `"BA mode — help me scope this feature."`
+- `"Dev time — implement ticket #12."`
+- `"QA check — I'm testing what you built."`
+
 ### Ticket-First, Documentation-Aware Workflow (MANDATORY)
 
 Every software change — feature, bug fix, refactor, or data update — follows this sequence. No step may be skipped.
@@ -145,6 +163,15 @@ The **Functional Specification** (`docs/functional-spec.md`) is the authoritativ
 - Documentation updates are part of the definition of done, not a follow-up task
 - When in doubt about whether docs need updating, they do
 - The Functional Specification is the primary document; CLAUDE.md and README.md are secondary but must stay consistent
+
+### Compressing Steps for Small Changes
+
+Not every change needs the full ceremony. Here's when you can compress:
+
+- **Data-only changes** (adding a record, fixing a typo): Steps 2-4 can compress into a quick scan. Still need a ticket (Step 1) and human verification (Step 7).
+- **Bug fixes with obvious cause**: Step 2 becomes "confirm the spec describes the expected behavior." Steps 3-4 can compress into a single issue comment.
+- **Documentation-only changes**: Step 5 becomes "edit the docs" instead of "write code." Step 6 is the main deliverable.
+- **When NOT to compress**: New features, changes affecting multiple files, changes where you're unsure about existing behavior, anything that modifies user-facing behavior.
 
 ### When Making Changes
 1. **Ticket first** — Follow the workflow above before all else
@@ -220,6 +247,34 @@ These transitions are **manual** and must be set during the workflow:
 ```
 
 Where `XX` is the GitHub Issue number. Use `Fixes #XX` in PR body for auto-close.
+
+### Branch Naming
+
+```
+[type]/[short-description]
+```
+
+| Prefix | Use for |
+|--------|---------|
+| `feature/` | New features |
+| `fix/` | Bug fixes |
+| `docs/` | Documentation changes |
+| `chore/` | Refactors, tooling, dependencies |
+
+Use lowercase and hyphens. Include issue number if helpful: `feature/12-avatar-upload`. Solo projects can commit to main freely — branch when changes need review or span multiple sessions.
+
+### Severity and Priority
+
+Bug severity maps to priority labels:
+
+| Severity | Priority Label | Response |
+|----------|---------------|----------|
+| **Critical** — System down or data at risk | `priority:high` | Fix immediately |
+| **High** — Feature broken, no workaround | `priority:high` | Fix before new features |
+| **Medium** — Works but with issues | *(no label)* | Normal backlog order |
+| **Low** — Cosmetic or minor inconvenience | `priority:low` | Fix when convenient |
+
+The PO can override the default mapping when business context warrants it (e.g., a low-severity typo on a landing page may still be `priority:high`).
 
 ### Idea to Ship Cycle
 
