@@ -18,7 +18,8 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 | [`docs/commit-conventions.md`](docs/commit-conventions.md) | Commit, PR, and branch naming conventions |
 | [`docs/definition-of-done.md`](docs/definition-of-done.md) | Definition of Done checklists by issue type |
 | [`docs/severity-matrix.md`](docs/severity-matrix.md) | Bug severity and priority matrix |
-| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, chore |
+| [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | Testing strategy stub — decisions to make per project |
+| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, chore, docs |
 | [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | PR checklist template |
 | [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | Automate label creation via `gh` CLI |
 
