@@ -112,6 +112,19 @@ See [`docs/roles.md`](docs/roles.md) for detailed role definitions and "hat-swit
 
 ---
 
+## Labels
+
+Four categories, 20 labels total. See [`docs/labels.md`](docs/labels.md) for full details and `gh` CLI setup commands.
+
+| Category | Labels | Rule |
+|----------|--------|------|
+| **Type** | `feature`, `bug`, `docs`, `task`, `spike` | Exactly one per issue |
+| **Area** | `area:frontend`, `area:backend`, `area:data`, `area:docs`, `area:infra`, `area:testing`, `area:design` | One or more (customize for your project) |
+| **Priority** | `priority:high`, `priority:low` | At most one; no label = normal priority |
+| **Resolution** | `resolution:wontfix`, `resolution:duplicate`, `resolution:cannot-reproduce`, `resolution:by-design`, `resolution:stale`, `resolution:superseded` | Applied when closing without completing; no label = completed |
+
+---
+
 ## AI Collaboration Model
 
 This is not just a process document — it's a **human-AI collaboration framework**. Here's what makes it different:

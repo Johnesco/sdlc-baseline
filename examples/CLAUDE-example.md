@@ -205,7 +205,8 @@ Not every change needs the full ceremony. Here's when you can compress:
 All work is tracked in **GitHub Issues** with a **GitHub Projects** kanban board.
 
 - **Issues** = All work items (features, bugs, docs, tasks, spikes)
-- **Labels** = Type (`feature`, `bug`, `docs`, `task`, `spike`) + Area (`area:frontend`, `area:data`) + Priority (`priority:high`, `priority:low`)
+- **Labels** = Type (`feature`, `bug`, `docs`, `task`, `spike`) + Area (`area:frontend`, `area:data`) + Priority (`priority:high`, `priority:low`) + Resolution (`resolution:wontfix`, `resolution:duplicate`, etc.)
+  - Resolution labels are only applied when closing an issue **without completing the work**. No resolution label = completed.
 - **Milestones** = Core Editor, Storage & Sync, Polish & UX
 - **Projects board** = Visual kanban for tracking status
 
