@@ -288,12 +288,17 @@ const DATA = {
     { name: 'priority:high',  color: '#b60205', category: 'priority', description: 'Must be addressed soon' },
     { name: 'priority:low',   color: '#c2e0c6', category: 'priority', description: 'Nice to have, no urgency' },
     // Flow
-    { name: 'duplicate',      color: '#cfd3d7', category: 'flow',     description: 'Issue is a duplicate of an existing one' },
-    { name: 'wontfix',        color: '#ffffff', category: 'flow',     description: 'Issue is declined or will not be addressed' },
     { name: 'blocked',        color: '#b60205', category: 'flow',     description: 'Issue is blocked by an external dependency' },
     { name: 'hotfix',         color: '#d73a4a', category: 'flow',     description: 'Emergency fix requiring expedited process' },
     { name: 'needs-split',    color: '#fbca04', category: 'flow',     description: 'Issue is too large and needs decomposition' },
     { name: 'rework',         color: '#e4e669', category: 'flow',     description: 'Sent back from Verify for corrections' },
+    // Resolution
+    { name: 'resolution:wontfix',          color: '#d1d5db', category: 'resolution', description: 'Deliberately declined by PO' },
+    { name: 'resolution:duplicate',        color: '#d1d5db', category: 'resolution', description: 'Already covered by another issue' },
+    { name: 'resolution:cannot-reproduce', color: '#d1d5db', category: 'resolution', description: 'Bug can\'t be replicated' },
+    { name: 'resolution:by-design',        color: '#d1d5db', category: 'resolution', description: 'Reported behavior is intentional, not a bug' },
+    { name: 'resolution:stale',            color: '#d1d5db', category: 'resolution', description: 'Issue went inactive, no longer relevant' },
+    { name: 'resolution:superseded',       color: '#d1d5db', category: 'resolution', description: 'Replaced by a different ticket or approach' },
   ],
 
   // --- Supplemental Flows ---
@@ -303,14 +308,14 @@ const DATA = {
       name: 'Duplicate Detection',
       description: 'When a new issue is identified as a duplicate of an existing one.',
       actors: ['PO', 'BA'],
-      labels: ['duplicate'],
-      steps: ['New issue created', 'Reviewer finds existing issue covering same scope', 'Link to original in comment', 'Label as duplicate', 'Close the duplicate'],
+      labels: ['resolution:duplicate'],
+      steps: ['New issue created', 'Reviewer finds existing issue covering same scope', 'Link to original in comment', 'Label as resolution:duplicate', 'Close as not planned'],
       mermaid: `flowchart TD
     A["New Issue Created"] --> B{"Existing issue<br/>covers this?"}
     B -- No --> C["Proceed with<br/>normal workflow"]
     B -- Yes --> D["Comment: link<br/>to original issue"]
-    D --> E["Add label:<br/>duplicate"]
-    E --> F["Close issue"]
+    D --> E["Add label:<br/>resolution:duplicate"]
+    E --> F["Close as<br/>not planned"]
     F --> G["Done<br/>(auto)"]
     style A fill:#ddf4ff,stroke:#0969da
     style G fill:#dafbe1,stroke:#1a7f37
@@ -321,14 +326,14 @@ const DATA = {
       name: "Won't-Fix / Declined",
       description: 'When the PO decides an issue will not be addressed.',
       actors: ['PO'],
-      labels: ['wontfix'],
-      steps: ['Issue exists in Backlog', 'PO decides not to pursue', 'Add rationale comment', 'Label as wontfix', 'Close the issue'],
+      labels: ['resolution:wontfix'],
+      steps: ['Issue exists in Backlog', 'PO decides not to pursue', 'Add rationale comment', 'Label as resolution:wontfix', 'Close as not planned'],
       mermaid: `flowchart TD
     A["Issue in Backlog"] --> B{"PO reviews"}
     B -- Proceed --> C["Normal workflow"]
     B -- Decline --> D["Comment:<br/>rationale for declining"]
-    D --> E["Add label:<br/>wontfix"]
-    E --> F["Close issue"]
+    D --> E["Add label:<br/>resolution:wontfix"]
+    E --> F["Close as<br/>not planned"]
     F --> G["Done<br/>(auto)"]
     style A fill:#ddf4ff,stroke:#0969da
     style G fill:#dafbe1,stroke:#1a7f37
@@ -805,7 +810,8 @@ function renderLabels() {
     { key: 'type', title: 'Type Labels', desc: 'Every issue gets exactly one type label.' },
     { key: 'area', title: 'Area Labels', desc: 'One or more area labels to indicate which part of the codebase is affected.' },
     { key: 'priority', title: 'Priority Labels', desc: 'At most one. No label = normal priority.' },
-    { key: 'flow', title: 'Flow Labels', desc: 'Applied during supplemental flows (duplicate, wontfix, rework, etc.).' },
+    { key: 'flow', title: 'Flow Labels', desc: 'Applied during in-flight workflow events (blocked, hotfix, rework, etc.).' },
+    { key: 'resolution', title: 'Resolution Labels', desc: 'Applied when closing an issue without completing the work. No label = completed.' },
   ];
 
   let html = `<div class="section" id="labels">

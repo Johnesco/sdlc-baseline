@@ -1,6 +1,6 @@
 # Label Taxonomy
 
-A consistent labeling system for GitHub Issues. Labels are grouped into three categories: **Type**, **Area**, and **Priority**.
+A consistent labeling system for GitHub Issues. Labels are grouped into four categories: **Type**, **Area**, **Priority**, and **Resolution**.
 
 ---
 
@@ -45,6 +45,23 @@ Issues get **at most one** priority label. Most issues don't need one — use pr
 
 > **Why only two?** With a solo dev or small team, a simple high/low split is enough. Everything without a priority label is "normal" priority. See [`severity-matrix.md`](severity-matrix.md) for how bug severity maps to these labels.
 
+### Resolution Labels
+
+Applied when closing an issue that was **not completed normally**. Issues closed without a resolution label are implicitly "Completed."
+
+| Label | Color | Description |
+|-------|-------|-------------|
+| `resolution:wontfix` | `#d1d5db` | Deliberately declined by PO |
+| `resolution:duplicate` | `#d1d5db` | Already covered by another issue |
+| `resolution:cannot-reproduce` | `#d1d5db` | Bug can't be replicated |
+| `resolution:by-design` | `#d1d5db` | Reported behavior is intentional, not a bug |
+| `resolution:stale` | `#d1d5db` | Issue went inactive, no longer relevant |
+| `resolution:superseded` | `#d1d5db` | Replaced by a different ticket or approach |
+
+> **Convention:** No resolution label = completed. Only add a resolution label when closing an issue without doing the work. Use GitHub's "Close as not planned" option alongside the resolution label.
+
+> **Always comment before closing:** When applying any resolution label, add a comment explaining why. For `resolution:duplicate` and `resolution:superseded`, link to the related issue.
+
 ---
 
 ## Setup Commands
@@ -73,6 +90,14 @@ gh label create "area:design" --color "fbca04" --description "UI/UX design, styl
 # Priority labels
 gh label create "priority:high" --color "b60205" --description "Must be addressed soon"
 gh label create "priority:low" --color "c2e0c6" --description "Nice to have, no urgency"
+
+# Resolution labels
+gh label create "resolution:wontfix" --color "d1d5db" --description "Deliberately declined by PO"
+gh label create "resolution:duplicate" --color "d1d5db" --description "Already covered by another issue"
+gh label create "resolution:cannot-reproduce" --color "d1d5db" --description "Bug can't be replicated"
+gh label create "resolution:by-design" --color "d1d5db" --description "Reported behavior is intentional, not a bug"
+gh label create "resolution:stale" --color "d1d5db" --description "Issue went inactive, no longer relevant"
+gh label create "resolution:superseded" --color "d1d5db" --description "Replaced by a different ticket or approach"
 ```
 
 > You can also run `scripts/setup-labels.sh` to execute all of these at once.
@@ -109,6 +134,19 @@ gh issue create \
 
 Multiple labels are comma-separated. Always include at least the type label.
 
+### Closing with a resolution
+
+```bash
+# Close as not planned with a resolution label
+gh issue edit 42 --add-label "resolution:wontfix"
+gh issue close 42 --reason "not planned"
+
+# Close a duplicate (always link the original first)
+gh issue comment 42 --body "Duplicate of #15"
+gh issue edit 42 --add-label "resolution:duplicate"
+gh issue close 42 --reason "not planned"
+```
+
 ### Querying by label
 
 ```bash
@@ -123,6 +161,12 @@ gh issue list --label "area:docs"
 
 # All spikes
 gh issue list --label "spike"
+
+# All issues closed as won't fix
+gh issue list --state closed --label "resolution:wontfix"
+
+# All non-completed closures
+gh issue list --state closed --label "resolution:wontfix,resolution:duplicate,resolution:stale"
 ```
 
 ---
@@ -140,7 +184,7 @@ gh label create "area:search" --color "c5def5" --description "Search and filteri
 
 ### Recommended approach
 
-1. Start with Type + Priority labels (7 labels)
+1. Start with Type + Priority + Resolution labels (13 labels)
 2. Add Area labels as you create your first few issues
 3. Don't create area labels speculatively — wait until you have an issue that needs one
-4. Keep the total under 20 labels to stay manageable
+4. Keep the total under 30 labels to stay manageable

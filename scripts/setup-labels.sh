@@ -97,11 +97,24 @@ echo ""
 run gh label create "priority:high" --color "b60205" --description "\"Must be addressed soon\""           --force $REPO_FLAG
 run gh label create "priority:low"  --color "c2e0c6" --description "\"Nice to have, no urgency\""         --force $REPO_FLAG
 
+# ── Resolution labels ────────────────────────────────────────────────
+
+echo ""
+echo "=== Creating resolution labels ==="
+echo ""
+
+run gh label create "resolution:wontfix"           --color "d1d5db" --description "\"Deliberately declined by PO\""                        --force $REPO_FLAG
+run gh label create "resolution:duplicate"         --color "d1d5db" --description "\"Already covered by another issue\""                   --force $REPO_FLAG
+run gh label create "resolution:cannot-reproduce"  --color "d1d5db" --description "\"Bug can't be replicated\""                            --force $REPO_FLAG
+run gh label create "resolution:by-design"         --color "d1d5db" --description "\"Reported behavior is intentional, not a bug\""        --force $REPO_FLAG
+run gh label create "resolution:stale"             --color "d1d5db" --description "\"Issue went inactive, no longer relevant\""             --force $REPO_FLAG
+run gh label create "resolution:superseded"        --color "d1d5db" --description "\"Replaced by a different ticket or approach\""          --force $REPO_FLAG
+
 # ── Done ──────────────────────────────────────────────────────────────
 
 echo ""
 echo "=== Done ==="
 echo ""
-echo "Created 14 labels (5 type + 7 area + 2 priority)."
+echo "Created 20 labels (5 type + 7 area + 2 priority + 6 resolution)."
 echo ""
 echo "Customize area labels for your project — see docs/labels.md for guidance."
