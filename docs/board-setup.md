@@ -1,6 +1,6 @@
 # GitHub Projects Board Setup
 
-Step-by-step guide to creating the 6-column kanban board that drives this workflow.
+Step-by-step guide to creating the 5-column kanban board that drives this workflow.
 
 ---
 
@@ -32,7 +32,7 @@ gh project create --owner [YOUR_USERNAME] --title "[Project Name]"
 
 ## Step 2: Configure Columns
 
-The default board has 3 columns (Todo, In Progress, Done). You need 6:
+The default board has 3 columns (Todo, In Progress, Done). You need 5:
 
 ### Rename existing columns
 1. Click the **Todo** column header → Rename to **Backlog**
@@ -42,14 +42,13 @@ The default board has 3 columns (Todo, In Progress, Done). You need 6:
 ### Add new columns
 Add these columns between the existing ones (click **+** to add):
 
-4. **Refining** — place after Backlog
-5. **Ready** — place after Refining
-6. **Verify** — place after In Progress
+4. **Ready** — place after Backlog
+5. **Verify** — place after In Progress
 
 ### Final column order
 
 ```
-Backlog → Refining → Ready → In Progress → Verify → Done
+Backlog → Ready → In Progress → Verify → Done
 ```
 
 ---
@@ -90,8 +89,7 @@ These transitions are **not** automated and must be set by the developer or AI d
 
 | Transition | When |
 |------------|------|
-| Backlog → Refining | Starting to scope/discuss the issue |
-| Refining → Ready | Acceptance criteria are finalized |
+| Backlog → Ready | Refinement checklist complete, acceptance criteria finalized |
 | Ready → In Progress | Coding begins |
 | In Progress → Verify | Code is complete, awaiting human testing |
 
@@ -179,7 +177,7 @@ gh project item-edit \
 
 After setup, verify:
 
-- [ ] 6 columns in correct order: Backlog → Refining → Ready → In Progress → Verify → Done
+- [ ] 5 columns in correct order: Backlog → Ready → In Progress → Verify → Done
 - [ ] "Item added" automation sets status to Backlog
 - [ ] "Item closed" automation sets status to Done
 - [ ] "Item reopened" automation sets status to In Progress

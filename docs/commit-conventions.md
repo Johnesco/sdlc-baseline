@@ -120,7 +120,8 @@ Use `Fixes #XX` in the PR body (not just the title) to auto-close the issue when
 | `feature/` | New features |
 | `fix/` | Bug fixes |
 | `docs/` | Documentation changes |
-| `chore/` | Refactors, tooling, dependencies |
+| `task/` | Refactors, tooling, dependencies |
+| `spike/` | Research, investigation |
 
 ### Examples
 
@@ -128,7 +129,8 @@ Use `Fixes #XX` in the PR body (not just the title) to auto-close the issue when
 feature/avatar-upload
 fix/search-clear-bug
 docs/update-api-spec
-chore/upgrade-dependencies
+task/upgrade-dependencies
+spike/auth-provider-comparison
 ```
 
 ### Rules

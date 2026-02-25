@@ -116,7 +116,7 @@ document.addEventListener('note:selected', (e) => loadNote(e.detail.id));
 | Role | Owner | Board Columns | Key Rule |
 |------|-------|---------------|----------|
 | **PO** (Product Owner) | Human | Backlog, Done | Decides priority, accepts work |
-| **BA** (Business Analyst) | Human or Claude | Refining, Ready | Scopes tickets, writes acceptance criteria |
+| **BA** (Business Analyst) | Human or Claude | Backlog, Ready | Scopes tickets, writes acceptance criteria |
 | **Dev** (Developer) | Claude (primary) | In Progress | Writes code, follows conventions |
 | **Documenter** | Claude (bundled with Dev) | In Progress | Updates spec, CLAUDE.md, README |
 | **QA** (Quality Assurance) | **Human (always)** | **Verify** | Verifies completed work |
@@ -204,8 +204,8 @@ Not every change needs the full ceremony. Here's when you can compress:
 
 All work is tracked in **GitHub Issues** with a **GitHub Projects** kanban board.
 
-- **Issues** = All work items (features, bugs, docs, chores)
-- **Labels** = Type (`feature`, `bug`, `docs`, `chore`) + Area (`area:frontend`, `area:data`) + Priority (`priority:high`, `priority:low`)
+- **Issues** = All work items (features, bugs, docs, tasks, spikes)
+- **Labels** = Type (`feature`, `bug`, `docs`, `task`, `spike`) + Area (`area:frontend`, `area:data`) + Priority (`priority:high`, `priority:low`)
 - **Milestones** = Core Editor, Storage & Sync, Polish & UX
 - **Projects board** = Visual kanban for tracking status
 
@@ -213,8 +213,7 @@ All work is tracked in **GitHub Issues** with a **GitHub Projects** kanban board
 
 | Column | What's Here |
 |--------|-------------|
-| **Backlog** | Captured but not yet scoped |
-| **Refining** | Defining scope and requirements |
+| **Backlog** | Captured; refinement happens here (doc review, scope, AC) |
 | **Ready** | Acceptance criteria finalized, ready to build |
 | **In Progress** | Actively being coded |
 | **Verify** | Code complete, awaiting human testing |
@@ -235,8 +234,7 @@ These transitions are **manual** and must be set during the workflow:
 
 | Transition | When to Move |
 |------------|-------------|
-| Backlog → Refining | When scoping/discussing the issue |
-| Refining → Ready | When acceptance criteria are finalized |
+| Backlog → Ready | Refinement checklist complete, acceptance criteria finalized |
 | Ready → In Progress | When coding begins |
 | In Progress → Verify | When code is complete, awaiting testing |
 
@@ -259,7 +257,8 @@ Where `XX` is the GitHub Issue number. Use `Fixes #XX` in PR body for auto-close
 | `feature/` | New features |
 | `fix/` | Bug fixes |
 | `docs/` | Documentation changes |
-| `chore/` | Refactors, tooling, dependencies |
+| `task/` | Refactors, tooling, dependencies |
+| `spike/` | Research, investigation |
 
 Use lowercase and hyphens. Include issue number if helpful: `feature/12-avatar-upload`. Solo projects can commit to main freely — branch when changes need review or span multiple sessions.
 

@@ -36,7 +36,7 @@ This document defines the roles in the development workflow and how they map to 
 - Refine tickets with context, affected files, and doc impact
 - Draft issue descriptions in user-story format
 
-**Board columns owned:** Refining, Ready
+**Board columns owned:** Backlog (refinement), Ready
 
 **When wearing this hat, you might say:**
 - "Help me scope this feature — what files would be affected?"
@@ -128,7 +128,7 @@ In practice, the Dev and Documenter roles are performed by the same person/AI in
 | Role | Typical Owner | Board Columns | Can AI Do It? |
 |------|---------------|---------------|---------------|
 | **PO** | Human | Backlog, Done | No — requires human judgment |
-| **BA** | Human or AI | Refining, Ready | Yes — with human oversight |
+| **BA** | Human or AI | Backlog (refinement), Ready | Yes — with human oversight |
 | **Dev** | AI or Human | In Progress | Yes — primary AI role |
 | **Documenter** | AI (with Dev) | In Progress | Yes — bundled with Dev |
 | **QA** | **Human** | **Verify** | **No — cannot self-verify** |

@@ -41,7 +41,7 @@ A change to documentation files only (no code changes).
 - [ ] **Commit references ticket** — All commits include `#XX`
 - [ ] **Ready for human review** — Card moved to Verify column
 
-### Chore
+### Task
 
 Refactors, dependency updates, tooling, or infrastructure changes.
 
@@ -51,6 +51,16 @@ Refactors, dependency updates, tooling, or infrastructure changes.
 - [ ] **Documentation updated** — If the change affects project structure or setup
 - [ ] **Commit references ticket** — All commits include `#XX`
 - [ ] **Ready for human verification** — Card moved to Verify column
+
+### Spike
+
+Research, investigation, or proof-of-concept to answer a question.
+
+- [ ] **Question answered** — Or explicitly marked unanswerable with current information
+- [ ] **Findings documented** — In issue comments or a linked document
+- [ ] **Recommendation provided** — With tradeoffs clearly stated
+- [ ] **Follow-up tickets created** — If the spike produced actionable next steps
+- [ ] **Ready for human review** — Card moved to Verify column
 
 ---
 

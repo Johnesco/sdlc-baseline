@@ -71,7 +71,8 @@ echo ""
 run gh label create "feature"  --color "1d76db" --description "\"New functionality or enhancement\""     --force $REPO_FLAG
 run gh label create "bug"      --color "d73a4a" --description "\"Something isn't working correctly\""     --force $REPO_FLAG
 run gh label create "docs"     --color "0075ca" --description "\"Documentation-only changes\""            --force $REPO_FLAG
-run gh label create "chore"    --color "e4e669" --description "\"Refactors, dependencies, tooling, infrastructure\"" --force $REPO_FLAG
+run gh label create "task"     --color "e4e669" --description "\"Refactors, dependencies, tooling, infrastructure\"" --force $REPO_FLAG
+run gh label create "spike"    --color "c29cf0" --description "\"Research, investigation, or proof-of-concept\""     --force $REPO_FLAG
 
 # ── Area labels ───────────────────────────────────────────────────────
 
@@ -101,6 +102,6 @@ run gh label create "priority:low"  --color "c2e0c6" --description "\"Nice to ha
 echo ""
 echo "=== Done ==="
 echo ""
-echo "Created 13 labels (4 type + 7 area + 2 priority)."
+echo "Created 14 labels (5 type + 7 area + 2 priority)."
 echo ""
 echo "Customize area labels for your project — see docs/labels.md for guidance."

@@ -19,7 +19,7 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 | [`docs/definition-of-done.md`](docs/definition-of-done.md) | Definition of Done checklists by issue type |
 | [`docs/severity-matrix.md`](docs/severity-matrix.md) | Bug severity and priority matrix |
 | [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | Testing strategy stub — decisions to make per project |
-| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, chore, docs |
+| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, task, docs, spike |
 | [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | PR checklist template |
 | [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | Automate label creation via `gh` CLI |
 | [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | Full worked example of a filled-in CLAUDE.md |
@@ -40,8 +40,8 @@ cp -r sdlc-baseline/.github your-project/
 
 **2. Set up your GitHub Projects board**
 
-Follow [`docs/board-setup.md`](docs/board-setup.md) to create a 6-column kanban board:
-**Backlog** | **Refining** | **Ready** | **In Progress** | **Verify** | **Done**
+Follow [`docs/board-setup.md`](docs/board-setup.md) to create a 5-column kanban board:
+**Backlog** | **Ready** | **In Progress** | **Verify** | **Done**
 
 **3. Start building**
 
@@ -84,7 +84,7 @@ This process supports a solo developer wearing multiple hats, optionally assiste
 | Role | Typical Owner | Responsibilities | Board Columns |
 |------|---------------|------------------|---------------|
 | **PO** (Product Owner) | Human | Prioritize backlog, accept completed work | Backlog, Done |
-| **BA** (Business Analyst) | Human or AI | Scope requirements, write acceptance criteria | Refining, Ready |
+| **BA** (Business Analyst) | Human or AI | Scope requirements, write acceptance criteria | Backlog (refinement), Ready |
 | **Dev** (Developer) | AI (primary) or Human | Write code, reference tickets in commits | In Progress |
 | **Documenter** | AI (bundled with Dev) | Update specs, CLAUDE.md, README | In Progress |
 | **QA** (Quality Assurance) | **Human (always)** | Verify completed work, acceptance testing | Verify |
@@ -98,14 +98,13 @@ See [`docs/roles.md`](docs/roles.md) for detailed role definitions and "hat-swit
 ## Board Columns
 
 ```
- Backlog  -->  Refining  -->  Ready  -->  In Progress  -->  Verify  -->  Done
-   (PO)         (BA)          (BA)         (Dev)           (QA)        (PO)
+ Backlog  -->  Ready  -->  In Progress  -->  Verify  -->  Done
+  (PO/BA)       (BA)         (Dev)           (QA)        (PO)
 ```
 
 | Column | What's Here | Moved By |
 |--------|-------------|----------|
-| **Backlog** | Captured but not yet scoped | Auto (on issue create) |
-| **Refining** | Defining scope and requirements | Manual |
+| **Backlog** | Captured; refinement happens here (doc review, scope, AC) | Auto (on issue create) |
 | **Ready** | Acceptance criteria finalized, ready to build | Manual |
 | **In Progress** | Actively being coded | Manual |
 | **Verify** | Code complete, awaiting human testing | Manual |

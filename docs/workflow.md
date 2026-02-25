@@ -52,7 +52,7 @@ gh issue create \
 
 **Goal:** Understand what exists today, what will be impacted, and whether the docs match reality.
 
-**Board status:** Refining (move manually)
+**Board status:** Still Backlog (refinement in progress)
 
 ---
 
@@ -75,7 +75,7 @@ but the code also searches by neighborhood and host name.
 Which is correct? Should I update the spec or the code?
 ```
 
-**Board status:** Still Refining
+**Board status:** Still Backlog (refinement in progress)
 
 ---
 
@@ -202,6 +202,18 @@ Not every change needs the full ceremony. Here's when you can compress:
 | 5. Implement | — | — | Writes code | — | — |
 | 6. Document | — | — | — | Updates all docs | — |
 | 7. Verify | Accepts delivery | — | — | — | Tests + reviews |
+
+---
+
+## How Steps Map to Board Columns
+
+| Board Column | Workflow Steps | What Happens |
+|-------------|---------------|--------------|
+| **Backlog** | Steps 1-3 | Ticket created, docs reviewed, discrepancies flagged |
+| **Ready** | Step 4 complete | AC finalized, scope agreed — pick queue for devs |
+| **In Progress** | Steps 5-6 | Code written, docs updated |
+| **Verify** | Step 7 | Human tests and reviews |
+| **Done** | — | Accepted, issue closed |
 
 ---
 

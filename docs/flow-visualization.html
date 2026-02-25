@@ -145,8 +145,8 @@ const DATA = {
   // --- Workflow Steps ---
   workflowSteps: [
     { id: 'capture',   step: 1, name: 'Capture as a Ticket',      column: 'Backlog',     actor: 'PO / BA',       auto: false, description: 'Create a GitHub Issue before any other work begins. Include title, labels, acceptance criteria, milestone.' },
-    { id: 'review',    step: 2, name: 'Review Documentation',      column: 'Refining',    actor: 'BA / Dev',      auto: false, description: 'Read the spec, CLAUDE.md, and README for the affected area. Understand what exists and what will change.' },
-    { id: 'flag',      step: 3, name: 'Flag Discrepancies',        column: 'Refining',    actor: 'BA / Dev',      auto: false, description: 'If docs and code disagree, stop and flag the mismatch. The PO decides which is correct.' },
+    { id: 'review',    step: 2, name: 'Review Documentation',      column: 'Backlog',     actor: 'BA / Dev',      auto: false, description: 'Read the spec, CLAUDE.md, and README for the affected area. Understand what exists and what will change.' },
+    { id: 'flag',      step: 3, name: 'Flag Discrepancies',        column: 'Backlog',     actor: 'BA / Dev',      auto: false, description: 'If docs and code disagree, stop and flag the mismatch. The PO decides which is correct.' },
     { id: 'refine',    step: 4, name: 'Refine the Ticket',         column: 'Ready',       actor: 'BA',            auto: false, description: 'Update the issue with doc impact, affected files, open questions, and final acceptance criteria.' },
     { id: 'implement', step: 5, name: 'Implement the Change',      column: 'In Progress', actor: 'Dev',           auto: false, description: 'Write the code. Reference the ticket number in commits. Follow existing patterns.' },
     { id: 'document',  step: 6, name: 'Update All Documentation',  column: 'In Progress', actor: 'Documenter',    auto: false, description: 'Update spec, CLAUDE.md, README.md. A change without doc updates is incomplete.' },
@@ -155,8 +155,7 @@ const DATA = {
 
   // --- Board Columns ---
   boardColumns: [
-    { id: 'backlog',     name: 'Backlog',     purpose: 'Captured but not yet scoped',                       owner: 'PO' },
-    { id: 'refining',    name: 'Refining',    purpose: 'Defining scope and requirements',                   owner: 'BA' },
+    { id: 'backlog',     name: 'Backlog',     purpose: 'Captured; refinement happens here (doc review, scope, AC)', owner: 'PO / BA' },
     { id: 'ready',       name: 'Ready',       purpose: 'Acceptance criteria finalized, ready to build',     owner: 'BA' },
     { id: 'in_progress', name: 'In Progress', purpose: 'Actively being coded',                              owner: 'Dev' },
     { id: 'verify',      name: 'Verify',      purpose: 'Code complete, awaiting human testing',             owner: 'QA' },
@@ -165,8 +164,7 @@ const DATA = {
 
   // --- Transitions ---
   transitions: [
-    { from: 'Backlog',     to: 'Refining',     trigger: 'Start scoping/discussing the issue',   type: 'manual' },
-    { from: 'Refining',    to: 'Ready',        trigger: 'Acceptance criteria finalized',         type: 'manual' },
+    { from: 'Backlog',     to: 'Ready',        trigger: 'Refinement checklist complete, AC finalized', type: 'manual' },
     { from: 'Ready',       to: 'In Progress',  trigger: 'Coding begins',                        type: 'manual' },
     { from: 'In Progress', to: 'Verify',       trigger: 'Code + docs complete, awaiting test',  type: 'manual' },
     // Automations
@@ -179,7 +177,7 @@ const DATA = {
   // --- Roles ---
   roles: [
     { id: 'po',          name: 'PO',          fullName: 'Product Owner',       owner: 'Human',               columns: ['Backlog', 'Done'],        canAI: false, keyRule: 'Decides priority, accepts work' },
-    { id: 'ba',          name: 'BA',          fullName: 'Business Analyst',    owner: 'Human or Claude',     columns: ['Refining', 'Ready'],      canAI: true,  keyRule: 'Scopes tickets, writes acceptance criteria' },
+    { id: 'ba',          name: 'BA',          fullName: 'Business Analyst',    owner: 'Human or Claude',     columns: ['Backlog', 'Ready'],       canAI: true,  keyRule: 'Scopes tickets, writes acceptance criteria' },
     { id: 'dev',         name: 'Dev',         fullName: 'Developer',           owner: 'Claude (primary)',    columns: ['In Progress'],            canAI: true,  keyRule: 'Writes code, follows conventions' },
     { id: 'documenter',  name: 'Documenter',  fullName: 'Documenter',          owner: 'Claude (with Dev)',   columns: ['In Progress'],            canAI: true,  keyRule: 'Updates spec, CLAUDE.md, README' },
     { id: 'qa',          name: 'QA',          fullName: 'Quality Assurance',   owner: 'Human (always)',      columns: ['Verify'],                 canAI: false, keyRule: 'Verifies completed work — cannot self-verify' },
@@ -238,8 +236,8 @@ const DATA = {
       status: 'base',
     },
     {
-      id: 'chore', name: 'Chore', label: 'chore', color: '#e4e669',
-      template: 'chore.yml', branchPrefix: 'chore/',
+      id: 'task', name: 'Task', label: 'task', color: '#e4e669',
+      template: 'task.yml', branchPrefix: 'task/',
       fields: ['Description', 'Rationale', 'Definition of Done'],
       compression: 'partial',
       compressionNote: 'Steps 2-4 can compress for obvious refactors. Still need ticket + verify.',
@@ -254,9 +252,9 @@ const DATA = {
       status: 'base',
     },
     {
-      id: 'spike', name: 'Spike', label: 'spike', color: '#d4c5f9',
-      template: '(proposed)', branchPrefix: 'spike/',
-      fields: ['Research Question', 'Time Box', 'Output Format', 'Decision Criteria'],
+      id: 'spike', name: 'Spike', label: 'spike', color: '#c29cf0',
+      template: 'spike.yml', branchPrefix: 'spike/',
+      fields: ['Question to Answer', 'Context', 'Timebox', 'Definition of Done'],
       compression: 'full',
       compressionNote: 'Steps 5-6 become "document findings." No code deliverable required.',
       dod: [
@@ -266,23 +264,7 @@ const DATA = {
         'Time box respected',
         'Follow-up tickets created if needed',
       ],
-      status: 'proposed',
-    },
-    {
-      id: 'config', name: 'Config', label: 'config', color: '#f9d0c4',
-      template: 'config.yml (proposed)', branchPrefix: 'config/',
-      fields: ['Description', 'Affected Config Files', 'Rollback Plan'],
-      compression: 'partial',
-      compressionNote: 'Steps 2-4 compress for straightforward config changes.',
-      dod: [
-        'Config change applied',
-        'No regressions',
-        'Documentation updated',
-        'Rollback plan noted',
-        'Commit references ticket',
-        'Ready for human verification',
-      ],
-      status: 'proposed',
+      status: 'base',
     },
   ],
 
@@ -292,9 +274,8 @@ const DATA = {
     { name: 'feature',        color: '#1d76db', category: 'type',     description: 'New functionality or enhancement' },
     { name: 'bug',            color: '#d73a4a', category: 'type',     description: 'Something isn\'t working correctly' },
     { name: 'docs',           color: '#0075ca', category: 'type',     description: 'Documentation-only changes' },
-    { name: 'chore',          color: '#e4e669', category: 'type',     description: 'Refactors, dependencies, tooling, infrastructure' },
-    { name: 'spike',          color: '#d4c5f9', category: 'type',     description: 'Research / investigation (proposed)' },
-    { name: 'config',         color: '#f9d0c4', category: 'type',     description: 'Configuration changes (proposed)' },
+    { name: 'task',           color: '#e4e669', category: 'type',     description: 'Refactors, dependencies, tooling, infrastructure' },
+    { name: 'spike',          color: '#c29cf0', category: 'type',     description: 'Research, investigation, or proof-of-concept' },
     // Area
     { name: 'area:frontend',  color: '#c5def5', category: 'area',     description: 'UI components, views, styles' },
     { name: 'area:backend',   color: '#bfdadc', category: 'area',     description: 'Server, API, database' },
@@ -341,9 +322,9 @@ const DATA = {
       description: 'When the PO decides an issue will not be addressed.',
       actors: ['PO'],
       labels: ['wontfix'],
-      steps: ['Issue exists in Backlog or Refining', 'PO decides not to pursue', 'Add rationale comment', 'Label as wontfix', 'Close the issue'],
+      steps: ['Issue exists in Backlog', 'PO decides not to pursue', 'Add rationale comment', 'Label as wontfix', 'Close the issue'],
       mermaid: `flowchart TD
-    A["Issue in Backlog<br/>or Refining"] --> B{"PO reviews"}
+    A["Issue in Backlog"] --> B{"PO reviews"}
     B -- Proceed --> C["Normal workflow"]
     B -- Decline --> D["Comment:<br/>rationale for declining"]
     D --> E["Add label:<br/>wontfix"]
@@ -359,9 +340,9 @@ const DATA = {
       description: 'When an issue is too large and needs to be broken into smaller, deliverable pieces.',
       actors: ['BA', 'PO'],
       labels: ['needs-split'],
-      steps: ['Issue identified as too large during Refining', 'Label as needs-split', 'BA creates child issues', 'Link children to parent', 'Close or convert parent to tracking issue'],
+      steps: ['Issue identified as too large during refinement', 'Label as needs-split', 'BA creates child issues', 'Link children to parent', 'Close or convert parent to tracking issue'],
       mermaid: `flowchart TD
-    A["Issue in Refining"] --> B{"Too large?"}
+    A["Issue in Backlog<br/>(refinement)"] --> B{"Too large?"}
     B -- No --> C["Continue to Ready"]
     B -- Yes --> D["Add label:<br/>needs-split"]
     D --> E["BA creates<br/>child issues"]
@@ -379,10 +360,10 @@ const DATA = {
       description: 'When a critical or high-severity bug requires an expedited fix cycle.',
       actors: ['PO', 'Dev', 'QA'],
       labels: ['hotfix', 'priority:high', 'bug'],
-      steps: ['Critical bug reported', 'Create issue with hotfix + priority:high labels', 'Skip Refining — go straight to In Progress', 'Fix, commit, PR', 'Expedited QA in Verify', 'Merge and deploy', 'Backfill documentation after'],
+      steps: ['Critical bug reported', 'Create issue with hotfix + priority:high labels', 'Skip refinement — go straight to In Progress', 'Fix, commit, PR', 'Expedited QA in Verify', 'Merge and deploy', 'Backfill documentation after'],
       mermaid: `flowchart TD
     A["Critical Bug<br/>Reported"] --> B["Create issue:<br/>bug + hotfix +<br/>priority:high"]
-    B --> C["Skip Refining<br/>to In Progress"]
+    B --> C["Skip refinement<br/>to In Progress"]
     C --> D["Dev: fix + commit<br/>+ open PR"]
     D --> E["Expedited QA<br/>in Verify"]
     E --> F{"Passes?"}
@@ -444,13 +425,13 @@ const DATA = {
       description: 'Periodic review of what went well, what did not, and process improvements to carry forward.',
       actors: ['PO', 'BA', 'Dev', 'QA'],
       labels: [],
-      steps: ['Milestone or sprint completed', 'Review completed issues for friction', 'Identify workflow improvements', 'Create chore/docs issues for improvements', 'Update process docs if universal', 'Upstream to sdlc-baseline if applicable'],
+      steps: ['Milestone or sprint completed', 'Review completed issues for friction', 'Identify workflow improvements', 'Create task/docs issues for improvements', 'Update process docs if universal', 'Upstream to sdlc-baseline if applicable'],
       mermaid: `flowchart TD
     A["Milestone or<br/>Sprint Complete"] --> B["Review completed<br/>issues"]
     B --> C["Identify:<br/>what went well"]
     B --> D["Identify:<br/>what had friction"]
     C --> E["Document<br/>patterns to keep"]
-    D --> F["Create improvement<br/>issues (chore/docs)"]
+    D --> F["Create improvement<br/>issues (task/docs)"]
     F --> G{"Universal<br/>improvement?"}
     G -- Yes --> H["Upstream to<br/>sdlc-baseline"]
     G -- No --> I["Project-specific<br/>backlog"]
@@ -701,7 +682,7 @@ function renderWorkflowBoard() {
 
   return `<div class="section" id="workflow-board">
 <h2>Section 1: Workflow \u2194 Board Column Alignment</h2>
-<p>The 7 workflow steps mapped to the 6 board columns. Each column is owned by a specific role.</p>
+<p>The 7 workflow steps mapped to the 5 board columns. Each column is owned by a specific role.</p>
 ${wrapDiagram(mmd, asciiWorkflowBoard(colSteps))}
 ${stepsTable}
 ${transTable}
@@ -720,9 +701,8 @@ function renderIssueFlows() {
     const compressedSteps = [];
     if (type.id === 'bug') compressedSteps.push(2, 3, 4);
     if (type.id === 'docs') compressedSteps.push(5);
-    if (type.id === 'chore') compressedSteps.push(2, 3, 4);
+    if (type.id === 'task') compressedSteps.push(2, 3, 4);
     if (type.id === 'spike') compressedSteps.push(5, 6);
-    if (type.id === 'config') compressedSteps.push(2, 3, 4);
 
     DATA.workflowSteps.forEach(s => {
       const isCompressed = compressedSteps.includes(s.step);

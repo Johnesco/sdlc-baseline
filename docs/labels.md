@@ -15,7 +15,8 @@ Every issue gets exactly **one** type label.
 | `feature` | `#1d76db` | New functionality or enhancement |
 | `bug` | `#d73a4a` | Something isn't working correctly |
 | `docs` | `#0075ca` | Documentation-only changes |
-| `chore` | `#e4e669` | Refactors, dependencies, tooling, infrastructure |
+| `task` | `#e4e669` | Refactors, dependencies, tooling, infrastructure |
+| `spike` | `#c29cf0` | Research, investigation, or proof-of-concept |
 
 ### Area Labels
 
@@ -57,7 +58,8 @@ Run these commands to create all labels in your repository:
 gh label create "feature" --color "1d76db" --description "New functionality or enhancement"
 gh label create "bug" --color "d73a4a" --description "Something isn't working correctly"
 gh label create "docs" --color "0075ca" --description "Documentation-only changes"
-gh label create "chore" --color "e4e669" --description "Refactors, dependencies, tooling, infrastructure"
+gh label create "task" --color "e4e669" --description "Refactors, dependencies, tooling, infrastructure"
+gh label create "spike" --color "c29cf0" --description "Research, investigation, or proof-of-concept"
 
 # Area labels
 gh label create "area:frontend" --color "c5def5" --description "UI components, views, styles"
@@ -118,6 +120,9 @@ gh issue list --label "feature,area:frontend,priority:high"
 
 # All docs-related issues (any type)
 gh issue list --label "area:docs"
+
+# All spikes
+gh issue list --label "spike"
 ```
 
 ---
@@ -135,7 +140,7 @@ gh label create "area:search" --color "c5def5" --description "Search and filteri
 
 ### Recommended approach
 
-1. Start with Type + Priority labels (6 labels)
+1. Start with Type + Priority labels (7 labels)
 2. Add Area labels as you create your first few issues
 3. Don't create area labels speculatively — wait until you have an issue that needs one
 4. Keep the total under 20 labels to stay manageable
