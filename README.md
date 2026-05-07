@@ -6,40 +6,62 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 
 ---
 
+## How to Consume
+
+**Treat sdlc-baseline as a library, not a starter kit.** Reference canonical docs from your project's `CLAUDE.md`; vendor only the small set of files GitHub's tooling reads from fixed paths. See [`docs/consumption.md`](docs/consumption.md) for the full model and rationale.
+
+When sdlc-baseline ships changes, [`CHANGELOG.md`](CHANGELOG.md) is the human-facing signal — glance at it before adopting changes downstream.
+
 ## What's Included
 
-| Artifact | Purpose |
-|----------|---------|
-| [`CLAUDE-TEMPLATE.md`](CLAUDE-TEMPLATE.md) | Drop-in CLAUDE.md workflow section for any project |
-| [`docs/workflow.md`](docs/workflow.md) | The 7-step ticket-first development workflow |
-| [`docs/roles.md`](docs/roles.md) | Role definitions and AI collaboration model |
-| [`docs/board-setup.md`](docs/board-setup.md) | GitHub Projects board creation guide |
-| [`docs/labels.md`](docs/labels.md) | Label taxonomy with `gh` CLI setup commands |
-| [`docs/commit-conventions.md`](docs/commit-conventions.md) | Commit, PR, and branch naming conventions |
-| [`docs/definition-of-done.md`](docs/definition-of-done.md) | Definition of Done checklists by issue type |
-| [`docs/adrs.md`](docs/adrs.md) | Architecture Decision Records — protocol, format, and threshold rule |
-| [`docs/severity-matrix.md`](docs/severity-matrix.md) | Bug severity and priority matrix |
-| [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | Testing strategy stub — decisions to make per project |
-| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, task, docs, spike |
-| [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | PR checklist template |
-| [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | Automate label creation via `gh` CLI |
-| [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | Full worked example of a filled-in CLAUDE.md |
-| [`examples/functional-spec-template.md`](examples/functional-spec-template.md) | Blank functional specification skeleton |
-| [`examples/adr-template.md`](examples/adr-template.md) | Copy-paste ADR skeleton (Nygard format) |
-| [`examples/adr-example.md`](examples/adr-example.md) | A worked ADR example from a real project |
+The **Type** column tells you how to consume each artifact:
+
+- **🔁 Vendored** — must be copied into your project (GitHub tooling reads it from a fixed path)
+- **🔗 Referenced** — link to the canonical version from your project; never copy
+- **📋 Template** — copy-paste source you adapt per project
+
+| Artifact | Type | Purpose |
+|----------|------|---------|
+| [`CLAUDE-TEMPLATE.md`](CLAUDE-TEMPLATE.md) | 📋 Template | Slim CLAUDE.md skeleton — copy and customize once per project |
+| [`docs/consumption.md`](docs/consumption.md) | 🔗 Referenced | How downstream projects consume sdlc-baseline (vendored vs referenced) |
+| [`docs/workflow.md`](docs/workflow.md) | 🔗 Referenced | The 7-step ticket-first development workflow |
+| [`docs/roles.md`](docs/roles.md) | 🔗 Referenced | Role definitions and AI collaboration model |
+| [`docs/board-setup.md`](docs/board-setup.md) | 🔗 Referenced | GitHub Projects board creation guide |
+| [`docs/labels.md`](docs/labels.md) | 🔗 Referenced | Label taxonomy with `gh` CLI setup commands |
+| [`docs/commit-conventions.md`](docs/commit-conventions.md) | 🔗 Referenced | Commit, PR, and branch naming conventions |
+| [`docs/definition-of-done.md`](docs/definition-of-done.md) | 🔗 Referenced | Definition of Done checklists by issue type |
+| [`docs/adrs.md`](docs/adrs.md) | 🔗 Referenced | ADR protocol, format, threshold rule |
+| [`docs/severity-matrix.md`](docs/severity-matrix.md) | 🔗 Referenced | Bug severity and priority matrix |
+| [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | 🔗 Referenced | Testing strategy stub |
+| [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
+| [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | 🔁 Vendored | Issue templates (GitHub UI reads them from `.github/`) |
+| [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | 🔁 Vendored | PR checklist (GitHub UI reads it from `.github/`) |
+| [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | 🔁 Vendored | Runs against the consuming repo's labels |
+| [`scripts/sync-github-templates.sh`](scripts/sync-github-templates.sh) | 📋 Template | Helper for downstream projects to pull the latest vendored files |
+| [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | 📋 Template | Worked example of a slim, project-specific CLAUDE.md |
+| [`examples/functional-spec-template.md`](examples/functional-spec-template.md) | 📋 Template | Blank functional specification skeleton |
+| [`examples/adr-template.md`](examples/adr-template.md) | 📋 Template | Copy-paste ADR skeleton (Nygard format) |
+| [`examples/adr-example.md`](examples/adr-example.md) | 📋 Template | A worked ADR example from a real project |
 
 ## Quick Start
 
-**1. Copy the files into your project**
+**1. Vendor the files GitHub's tooling needs**
 
 ```bash
 # Clone this repo
 git clone https://github.com/Johnesco/sdlc-baseline.git
 
-# Copy what you need into your project
+# Copy the slim template + the vendored artifacts (GitHub UI reads these
+# from fixed paths — they have to live in your repo)
 cp sdlc-baseline/CLAUDE-TEMPLATE.md your-project/CLAUDE.md
 cp -r sdlc-baseline/.github your-project/
+cp sdlc-baseline/scripts/setup-labels.sh your-project/scripts/
+cp sdlc-baseline/scripts/sync-github-templates.sh your-project/scripts/
 ```
+
+Customize `CLAUDE.md` with your project identity, file structure, milestones, and project IDs. Do **not** paste any sdlc-baseline process docs into it — `CLAUDE.md` already links to them.
+
+When sdlc-baseline updates, run `bash scripts/sync-github-templates.sh` to pull the latest vendored artifacts. Everything else updates automatically by virtue of being linked, not copied.
 
 **2. Set up your GitHub Projects board**
 

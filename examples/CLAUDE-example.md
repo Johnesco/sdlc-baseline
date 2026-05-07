@@ -102,193 +102,54 @@ document.addEventListener('note:selected', (e) => loadNote(e.detail.id));
 - [ ] Collaborative editing
 
 <!-- ============================================================
-     SDLC WORKFLOW
-     This section is universal. It works across any project that
-     uses GitHub Issues + Projects for tracking.
-
-     Source: https://github.com/Johnesco/sdlc-baseline
+     WORKING IN THIS PROJECT
+     Universal process content lives canonically in sdlc-baseline.
+     We link out — never paste copies here. See the consumption model:
+     https://github.com/Johnesco/sdlc-baseline/blob/main/docs/consumption.md
      ============================================================ -->
 
-## Instructions for Claude
+## Working in this project
 
-### Roles and Responsibilities
+This project uses the [sdlc-baseline](https://github.com/Johnesco/sdlc-baseline) universal workflow. Claude must follow these canonical docs:
 
-| Role | Owner | Board Columns | Key Rule |
-|------|-------|---------------|----------|
-| **PO** (Product Owner) | Human | Backlog, Done | Decides priority, accepts work |
-| **BA** (Business Analyst) | Human or Claude | Backlog, Ready | Scopes tickets, writes acceptance criteria |
-| **Dev** (Developer) | Claude (primary) | In Progress | Writes code, follows conventions |
-| **Documenter** | Claude (bundled with Dev) | In Progress | Updates spec, CLAUDE.md, README |
-| **QA** (Quality Assurance) | **Human (always)** | **Verify** | Verifies completed work |
+- [Workflow (7 steps)](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/workflow.md) — ticket-first, documentation-aware
+- [Roles & hat-switch protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/roles.md) — PO / BA / Dev / Documenter / QA
+- [Definition of Done](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md) — exit criteria by issue type
+- [Severity & priority matrix](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md)
+- [Commit, PR, and branch conventions](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md)
+- [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md)
 
-> **The most important rule: Claude cannot QA its own work.** The Verify column is always human-owned. The person or AI that wrote the code is not qualified to verify it.
+**The Functional Specification** (`docs/functional-spec.md`) is this project's authoritative behavior record. CLAUDE.md and README.md are secondary but must stay consistent.
 
-**Hat-switch protocol:** When working with Claude, explicitly state which role you're in to keep the interaction predictable:
-- `"PO hat — let's prioritize the backlog."`
-- `"BA mode — help me scope this feature."`
-- `"Dev time — implement ticket #12."`
-- `"QA check — I'm testing what you built."`
+**Two non-negotiables:**
 
-### Ticket-First, Documentation-Aware Workflow (MANDATORY)
+1. **No code without a ticket.** Every change starts as a GitHub Issue. Add it to the project board immediately:
+   ```
+   gh project item-add 2 --owner notekeeper-dev --url [ISSUE_URL]
+   ```
+2. **Claude cannot QA its own work.** The Verify column is always human-owned.
 
-Every software change — feature, bug fix, refactor, or data update — follows this sequence. No step may be skipped.
+When sdlc-baseline updates, glance at its [CHANGELOG](https://github.com/Johnesco/sdlc-baseline/blob/main/CHANGELOG.md) before adopting changes here.
 
-The **Functional Specification** (`docs/functional-spec.md`) is the authoritative record of all application features, behavior, and data formats. It is the single source of truth for what this application does.
+### Project-specific deviations
 
-**Before ANY change**, follow these steps in order:
+This project intentionally diverges from canonical sdlc-baseline guidance in these places (none currently):
 
-1. **Capture as a ticket** — Create a GitHub Issue describing the change before any other work begins. Include a clear title, relevant labels, acceptance criteria, and an associated **milestone**. Every issue must belong to an existing milestone by the time it ships; if no existing milestone fits, create a new one. No code is written without a ticket.
+- _(none)_
 
-   > **IMPORTANT — Add to Project Board:** After creating the issue, you **must** also add it to the GitHub Projects board. The `gh issue create` command does **NOT** auto-add issues to the project board. Run this immediately after creating the issue:
-   > ```
-   > gh project item-add 2 --owner notekeeper-dev --url [ISSUE_URL]
-   > ```
-   > An issue that is not on the board is considered incomplete.
+### Project IDs
 
-2. **Review documentation for affected areas** — Read the sections of the Functional Specification (and other docs like CLAUDE.md, README.md) that describe the area being changed. Identify what exists, what will be impacted, and note any discrepancies.
+- **Project board:** `PVT_examplePLACEHOLDER`
+- **Status field:** `PVTSSF_examplePLACEHOLDER`
+- **Status options:** Backlog=`exampleA`, Ready=`exampleB`, In Progress=`exampleC`, Verify=`exampleD`, Done=`exampleE`
 
-3. **Flag discrepancies** — If existing code already differs from what the documentation says, stop and flag the mismatch for validation before proceeding. Do not silently "fix" documentation to match code or vice versa without explicit confirmation.
+### Milestones
 
-4. **Refine the ticket** — Based on the documentation review, update the GitHub Issue with additional context, affected doc sections, and a plan for documentation updates. The ticket should reflect the full scope of work including doc changes.
-
-5. **Implement the change** — Write the code. Reference the ticket number (`#XX`) in commits.
-
-6. **Update all documentation** — Update the Functional Specification, CLAUDE.md, README.md, and any other affected docs so they accurately reflect the new state. This is not optional — a change is not complete until its documentation is current.
-
-7. **Verify consistency** — After updating, confirm that the documentation and code are in agreement. Any remaining gaps must be called out explicitly.
-
-**Key rules:**
-- No code without a ticket — every change starts as a GitHub Issue
-- A change without a corresponding documentation update is considered **incomplete**
-- Documentation updates are part of the definition of done, not a follow-up task
-- When in doubt about whether docs need updating, they do
-- The Functional Specification is the primary document; CLAUDE.md and README.md are secondary but must stay consistent
-
-### Compressing Steps for Small Changes
-
-Not every change needs the full ceremony. Here's when you can compress:
-
-- **Data-only changes** (adding a record, fixing a typo): Steps 2-4 can compress into a quick scan. Still need a ticket (Step 1) and human verification (Step 7).
-- **Bug fixes with obvious cause**: Step 2 becomes "confirm the spec describes the expected behavior." Steps 3-4 can compress into a single issue comment.
-- **Documentation-only changes**: Step 5 becomes "edit the docs" instead of "write code." Step 6 is the main deliverable.
-- **When NOT to compress**: New features, changes affecting multiple files, changes where you're unsure about existing behavior, anything that modifies user-facing behavior.
-
-### When Making Changes
-1. **Ticket first** — Follow the workflow above before all else
-2. **Read before editing** — Always read files before modifying them
-3. **Follow existing patterns** — Match the event-driven, module-based style in the codebase
-4. **Keep it simple** — No build step, no framework, no over-engineering
-
-### Maintaining Documentation
-
-**UPDATE the Functional Specification** (`docs/functional-spec.md`) when you:
-- Add, modify, or remove any feature
-- Fix a bug that changes observable behavior
-- Change the note data format
-- Alter UI behavior or keyboard shortcuts
-
-**UPDATE CLAUDE.md** when you:
-- Add new files or change the structure
-- Modify the storage layer or event system
-- Add new keyboard shortcuts
-- Make significant design decisions
-
-**UPDATE README.md** when changes affect:
-- Feature descriptions
-- Setup or usage instructions
-- Keyboard shortcut reference
-
-## Development Workflow
-
-### GitHub Issues & Projects
-
-All work is tracked in **GitHub Issues** with a **GitHub Projects** kanban board.
-
-- **Issues** = All work items (features, bugs, docs, tasks, spikes)
-- **Labels** = Type (`feature`, `bug`, `docs`, `task`, `spike`) + Area (`area:frontend`, `area:data`) + Priority (`priority:high`, `priority:low`) + Resolution (`resolution:wontfix`, `resolution:duplicate`, etc.)
-  - Resolution labels are only applied when closing an issue **without completing the work**. No resolution label = completed.
-- **Milestones** = Core Editor, Storage & Sync, Polish & UX
-- **Projects board** = Visual kanban for tracking status
-
-### Board Columns
-
-| Column | What's Here |
-|--------|-------------|
-| **Backlog** | Captured; refinement happens here (doc review, scope, AC) |
-| **Ready** | Acceptance criteria finalized, ready to build |
-| **In Progress** | Actively being coded |
-| **Verify** | Code complete, awaiting human testing |
-| **Done** | Verified and accepted |
-
-### Board Automations (GitHub Projects Workflows)
-
-These transitions are handled automatically by GitHub Projects:
-
-| Trigger | Sets Status To |
-|---------|---------------|
-| Item added to project | **Backlog** |
-| Item reopened | **In Progress** |
-| Item closed | **Done** |
-| Pull request merged | **Done** |
-
-These transitions are **manual** and must be set during the workflow:
-
-| Transition | When to Move |
-|------------|-------------|
-| Backlog → Ready | Refinement checklist complete, acceptance criteria finalized |
-| Ready → In Progress | When coding begins |
-| In Progress → Verify | When code is complete, awaiting testing |
-
-### Commit Convention
-
-```
-#XX: description
-```
-
-Where `XX` is the GitHub Issue number. Use `Fixes #XX` in PR body for auto-close.
-
-### Branch Naming
-
-```
-[type]/[short-description]
-```
-
-| Prefix | Use for |
-|--------|---------|
-| `feature/` | New features |
-| `fix/` | Bug fixes |
-| `docs/` | Documentation changes |
-| `task/` | Refactors, tooling, dependencies |
-| `spike/` | Research, investigation |
-
-Use lowercase and hyphens. Include issue number if helpful: `feature/12-avatar-upload`. Solo projects can commit to main freely — branch when changes need review or span multiple sessions.
-
-### Severity and Priority
-
-Bug severity maps to priority labels:
-
-| Severity | Priority Label | Response |
-|----------|---------------|----------|
-| **Critical** — System down or data at risk | `priority:high` | Fix immediately |
-| **High** — Feature broken, no workaround | `priority:high` | Fix before new features |
-| **Medium** — Works but with issues | *(no label)* | Normal backlog order |
-| **Low** — Cosmetic or minor inconvenience | `priority:low` | Fix when convenient |
-
-The PO can override the default mapping when business context warrants it (e.g., a low-severity typo on a landing page may still be `priority:high`).
-
-### Idea to Ship Cycle
-
-| Phase | What Happens |
-|-------|--------------|
-| **Capture** | `gh issue create` + add to project board |
-| **Refine** | Discussion in issue comments, spec it out |
-| **Build** | PR with `Fixes #XX`, branch + implementation |
-| **Verify** | PR includes spec updates, human reviews |
-| **Ship** | Merge PR → issue auto-closes → board updates |
-
-<!-- ============================================================
-     END SDLC WORKFLOW
-     ============================================================ -->
+| Milestone | Description |
+|-----------|-------------|
+| Core Editor | Markdown editing, preview, syntax highlighting |
+| Storage & Sync | IndexedDB layer, future CouchDB sync |
+| Polish & UX | Keyboard shortcuts, dark mode, exports |
 
 ## Project History
 
