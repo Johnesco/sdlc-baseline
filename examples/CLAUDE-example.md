@@ -300,11 +300,15 @@ The PO can override the default mapping when business context warrants it (e.g.,
 - **2025-12**: Initial release with basic editor
 
 ### Architecture Decisions
-1. **Vanilla JS** — No framework, educational and lightweight
-2. **IndexedDB over localStorage** — Handles larger notes, supports future sync
-3. **marked.js via CDN** — Proven library, no build step needed
-4. **Custom events over pub/sub** — Uses the platform, no dependencies
-5. **Ticket-first workflow** — Adopted from [sdlc-baseline](https://github.com/Johnesco/sdlc-baseline)
+
+Recorded as ADRs in [`docs/adr/`](docs/adr/). See [`docs/adr/README.md`](docs/adr/README.md) for the index. Format and threshold rule documented in [sdlc-baseline `docs/adrs.md`](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md).
+
+For example:
+- [ADR-001](docs/adr/001-vanilla-js.md) — Vanilla JS, no framework
+- [ADR-002](docs/adr/002-indexeddb-storage.md) — IndexedDB over localStorage
+- [ADR-003](docs/adr/003-marked-via-cdn.md) — marked.js via CDN, no build step
+
+(Pre-ADR decisions previously listed inline can be backfilled as ADRs if they meet the threshold rule.)
 
 ## Security Considerations
 - Markdown HTML is escaped before rendering (XSS prevention)

@@ -16,6 +16,7 @@ A new feature or enhancement to existing functionality.
 - [ ] **Spec updated** — Project specification reflects the new behavior
 - [ ] **CLAUDE.md updated** — File structure, patterns, or architecture changes documented
 - [ ] **README.md updated** — If the feature is user-facing or changes setup
+- [ ] **ADR written if applicable** — If this change makes an architectural decision per the [threshold rule](../docs/adrs.md#threshold-rule--when-to-write-one), a new ADR exists in `docs/adr/`. (Or: explicitly noted in the PR description that no ADR is needed and why.)
 - [ ] **Commit references ticket** — All commits include `#XX`
 - [ ] **Ready for human verification** — Card moved to Verify column
 
@@ -49,6 +50,7 @@ Refactors, dependency updates, tooling, or infrastructure changes.
 - [ ] **No regressions** — Nothing is broken by the change
 - [ ] **No behavior changes** — Unless explicitly intended (in which case, treat as a feature)
 - [ ] **Documentation updated** — If the change affects project structure or setup
+- [ ] **ADR written if applicable** — If this refactor implements an architectural decision per the [threshold rule](../docs/adrs.md#threshold-rule--when-to-write-one), a new ADR exists in `docs/adr/`.
 - [ ] **Commit references ticket** — All commits include `#XX`
 - [ ] **Ready for human verification** — Card moved to Verify column
 

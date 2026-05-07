@@ -17,6 +17,7 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 | [`docs/labels.md`](docs/labels.md) | Label taxonomy with `gh` CLI setup commands |
 | [`docs/commit-conventions.md`](docs/commit-conventions.md) | Commit, PR, and branch naming conventions |
 | [`docs/definition-of-done.md`](docs/definition-of-done.md) | Definition of Done checklists by issue type |
+| [`docs/adrs.md`](docs/adrs.md) | Architecture Decision Records — protocol, format, and threshold rule |
 | [`docs/severity-matrix.md`](docs/severity-matrix.md) | Bug severity and priority matrix |
 | [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | Testing strategy stub — decisions to make per project |
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | Issue templates: feature, bug, task, docs, spike |
@@ -24,6 +25,8 @@ No heavyweight tools. No enterprise bloat. Just a clear, repeatable process buil
 | [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | Automate label creation via `gh` CLI |
 | [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | Full worked example of a filled-in CLAUDE.md |
 | [`examples/functional-spec-template.md`](examples/functional-spec-template.md) | Blank functional specification skeleton |
+| [`examples/adr-template.md`](examples/adr-template.md) | Copy-paste ADR skeleton (Nygard format) |
+| [`examples/adr-example.md`](examples/adr-example.md) | A worked ADR example from a real project |
 
 ## Quick Start
 

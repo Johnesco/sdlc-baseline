@@ -49,6 +49,7 @@ gh issue create \
 - Project spec (e.g., `docs/functional-spec.md`) — sections related to the change
 - `CLAUDE.md` — file structure, patterns, conventions
 - `README.md` — if the change affects public-facing descriptions
+- `docs/adr/` — prior architectural decisions affecting this area (start with `docs/adr/README.md` for the index)
 
 **Goal:** Understand what exists today, what will be impacted, and whether the docs match reality.
 
@@ -139,6 +140,7 @@ Which is correct? Should I update the spec or the code?
 - Project spec — if any feature, behavior, or data format changed
 - CLAUDE.md — if file structure, patterns, or architecture changed
 - README.md — if public-facing features or setup instructions changed
+- **`docs/adr/`** — if this change makes an architectural choice that's expensive to reverse, where reasonable contributors would consider alternatives, or that future contributors will second-guess. Write a new ADR using [`examples/adr-template.md`](../examples/adr-template.md) and update `docs/adr/README.md`. See [`docs/adrs.md`](adrs.md) for the threshold rule.
 
 **Key rule:** A change without a documentation update is **incomplete**. Documentation updates are part of the definition of done, not a follow-up task.
 

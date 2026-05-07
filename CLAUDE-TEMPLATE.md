@@ -247,7 +247,8 @@ The PO can override the default mapping when business context warrants it (e.g.,
 - [Log significant changes here as they happen]
 
 ### Architecture Decisions
-- [Document key technical decisions and their rationale]
+
+Architectural decisions are recorded as ADRs in `docs/adr/`. See [sdlc-baseline `docs/adrs.md`](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md) for the protocol, format, and threshold rule.
 
 ## Security Considerations
 
