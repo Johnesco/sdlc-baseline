@@ -119,6 +119,11 @@ universal workflow. Read the canonical docs:
 - [Definition of Done](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md)
 - [Severity matrix](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md)
 - [Commit / branch conventions](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md)
+- [Release management](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md)
+- [Deployment](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md)
+- [CI/CD](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md)
+- [Backlog hygiene](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md)
+- [Incident response](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md)
 - [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md)
 
 ### Project-specific deviations
