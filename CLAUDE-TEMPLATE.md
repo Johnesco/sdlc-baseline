@@ -57,6 +57,11 @@ This project uses the [sdlc-baseline](https://github.com/Johnesco/sdlc-baseline)
 - [Definition of Done](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md) — exit criteria by issue type
 - [Severity & priority matrix](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md)
 - [Commit, PR, and branch conventions](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md)
+- [Release management](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md) — versioning, changelogs, hotfixes, milestones
+- [Deployment](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md) — deploy patterns, environments, config/secrets, rollback
+- [CI/CD](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md) — GitHub Actions, starter workflows, branch protection
+- [Backlog hygiene](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md) — review cadence, grooming, planning without sprints
+- [Incident response](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md) — production incidents: restore, investigate, prevent
 - [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md) — when and how to record architectural decisions
 - [Board setup](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/board-setup.md) and [labels](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/labels.md) — one-time setup
 

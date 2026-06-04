@@ -47,7 +47,7 @@ As a project grows, you'll want to supplement manual verification with automated
 | On PR (CI) | All tests | Gate merges on passing tests |
 | On merge to main (CI) | All tests + deploy | Final safety net |
 
-**Decision:** Start with "run tests manually" and add automation when the pain of forgetting justifies the setup cost.
+**Decision:** Start with "run tests manually" and add automation when the pain of forgetting justifies the setup cost. See [`ci-cd.md`](ci-cd.md) for how to wire tests into a GitHub Actions pipeline.
 
 ### 4. What coverage target
 

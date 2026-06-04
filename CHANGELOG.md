@@ -11,6 +11,11 @@
 ## [Unreleased]
 
 ### Added
+- `docs/release-management.md` — versioning, release checklists, changelogs, hotfixes, and milestone lifecycle. Closes the gap between "code verified" and "users have it."
+- `docs/deployment.md` — deploy patterns, environment model, config/secrets management, rollback protocol, platform guidance. Covers the "how code gets to production" leg of the SDLC.
+- `docs/ci-cd.md` — CI/CD for a sole developer. Pipeline stages, GitHub Actions basics, starter workflows (Node.js, Python, static site), branch protection, secrets in CI, debugging failures. Provides the automation layer connecting the ticket-first workflow to deployment.
+- `docs/backlog-hygiene.md` — review cadence (weekly/monthly/quarterly), grooming tactics, backlog size guidance, planning without sprints. Prevents the "200 open issues, no idea what to work on" failure mode.
+- `docs/incident-response.md` — the 6-step sequence (detect → assess → restore → communicate → investigate → prevent), rollback-vs-fix-forward decision guide, postmortem template, sole-dev monitoring recommendations.
 - `docs/consumption.md` — vendored vs referenced vs project-only model for downstream projects.
 - `CHANGELOG.md` — this file.
 - `scripts/sync-github-templates.sh` — helper that downstream projects can run to pull the latest GitHub-tooling-bound files (issue templates, PR template, label setup script).

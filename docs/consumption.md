@@ -57,6 +57,11 @@ These docs live canonically in sdlc-baseline. Downstream projects link to them f
 | Commit / branch conventions | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md |
 | Board setup | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/board-setup.md |
 | Labels | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/labels.md |
+| Release management | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md |
+| Deployment | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md |
+| CI/CD | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md |
+| Backlog hygiene | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md |
+| Incident response | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md |
 | ADR protocol | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md |
 | ADR template | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-template.md |
 | ADR worked example | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-example.md |

@@ -32,6 +32,11 @@ The **Type** column tells you how to consume each artifact:
 | [`docs/definition-of-done.md`](docs/definition-of-done.md) | 🔗 Referenced | Definition of Done checklists by issue type |
 | [`docs/adrs.md`](docs/adrs.md) | 🔗 Referenced | ADR protocol, format, threshold rule |
 | [`docs/severity-matrix.md`](docs/severity-matrix.md) | 🔗 Referenced | Bug severity and priority matrix |
+| [`docs/release-management.md`](docs/release-management.md) | 🔗 Referenced | Versioning, releases, changelogs, hotfixes, milestones |
+| [`docs/deployment.md`](docs/deployment.md) | 🔗 Referenced | Deploy patterns, environments, config/secrets, rollback |
+| [`docs/ci-cd.md`](docs/ci-cd.md) | 🔗 Referenced | CI/CD pipelines, GitHub Actions, starter workflows, branch protection |
+| [`docs/backlog-hygiene.md`](docs/backlog-hygiene.md) | 🔗 Referenced | Review cadence, grooming tactics, planning without sprints |
+| [`docs/incident-response.md`](docs/incident-response.md) | 🔗 Referenced | Production incidents: detect, restore, investigate, prevent |
 | [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | 🔗 Referenced | Testing strategy stub |
 | [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | 🔁 Vendored | Issue templates (GitHub UI reads them from `.github/`) |
