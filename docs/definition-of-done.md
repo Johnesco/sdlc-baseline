@@ -78,6 +78,8 @@ These apply to every issue type:
 
 4. **"It works on my machine" is not done.** Verify across the target environments (mobile/desktop, different browsers, etc.) as applicable.
 
+5. **CI must pass (when configured).** If the project has a CI pipeline, all checks must be green before moving to Verify. A failing build means the issue is not ready for human verification — fix it first, don't waste QA time. See [`ci-cd.md`](ci-cd.md).
+
 ---
 
 ## How to Use These Checklists
