@@ -62,6 +62,7 @@ These docs live canonically in sdlc-baseline. Downstream projects link to them f
 | CI/CD | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md |
 | Backlog hygiene | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md |
 | Incident response | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md |
+| Kickoff checklist | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/kickoff-checklist.md |
 | ADR protocol | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md |
 | ADR template | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-template.md |
 | ADR worked example | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-example.md |

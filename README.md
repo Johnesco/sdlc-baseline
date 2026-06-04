@@ -37,6 +37,7 @@ The **Type** column tells you how to consume each artifact:
 | [`docs/ci-cd.md`](docs/ci-cd.md) | 🔗 Referenced | CI/CD pipelines, GitHub Actions, starter workflows, branch protection |
 | [`docs/backlog-hygiene.md`](docs/backlog-hygiene.md) | 🔗 Referenced | Review cadence, grooming tactics, planning without sprints |
 | [`docs/incident-response.md`](docs/incident-response.md) | 🔗 Referenced | Production incidents: detect, restore, investigate, prevent |
+| [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md) | 🔗 Referenced | Day-1 setup guide for new and existing projects |
 | [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | 🔗 Referenced | Testing strategy stub |
 | [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | 🔁 Vendored | Issue templates (GitHub UI reads them from `.github/`) |
@@ -49,6 +50,8 @@ The **Type** column tells you how to consume each artifact:
 | [`examples/adr-example.md`](examples/adr-example.md) | 📋 Template | A worked ADR example from a real project |
 
 ## Quick Start
+
+> For the full step-by-step walkthrough (including deployment, CI/CD, and board setup), see [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md).
 
 **1. Vendor the files GitHub's tooling needs**
 
