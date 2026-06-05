@@ -4,6 +4,40 @@ A step-by-step guide for setting up a new project (or adopting this SDLC in an e
 
 ---
 
+## Quick Launch
+
+Open a Claude Code session in your new (or existing) project directory and paste this prompt, filling in the bracketed values:
+
+```
+Set up this project using the sdlc-baseline process.
+
+sdlc-baseline location: C:\code\sdlc-baseline
+(or: https://github.com/Johnesco/sdlc-baseline)
+
+Project name: [your project name]
+Purpose: [one sentence — what does it do?]
+Stack: [language, framework, key dependencies]
+Repo: [GitHub URL, or "create one"]
+
+Follow the kickoff checklist in sdlc-baseline/docs/kickoff-checklist.md.
+Copy the vendored files, create CLAUDE.md from the template, set up
+labels and the project board, and fill in project identity together
+with me. Skip deployment and CI/CD for now — I'll add those later.
+```
+
+Claude will walk through the phases below, copying files, running setup commands, and prompting you for the project-specific details it can't infer (milestones, architecture decisions, board IDs).
+
+After this first session, every future session reads CLAUDE.md and knows the process automatically.
+
+> **Adopting in an existing project?** Replace the last paragraph with:
+> ```
+> This is an existing project with code already in place. Follow the
+> "Existing Project" section of the kickoff checklist. Don't retrofit
+> old issues — just set up the process for new work going forward.
+> ```
+
+---
+
 ## New Project
 
 ### Phase 1: Repository and structure (30 minutes)

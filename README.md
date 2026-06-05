@@ -52,6 +52,8 @@ The **Type** column tells you how to consume each artifact:
 
 ## Quick Start
 
+> **Using Claude Code?** Paste the [Quick Launch prompt](docs/kickoff-checklist.md#quick-launch) into your first session and Claude handles the setup.
+>
 > For the full step-by-step walkthrough (including deployment, CI/CD, and board setup), see [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md).
 
 **1. Vendor the files GitHub's tooling needs**
