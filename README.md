@@ -38,7 +38,7 @@ The **Type** column tells you how to consume each artifact:
 | [`docs/backlog-hygiene.md`](docs/backlog-hygiene.md) | 🔗 Referenced | Review cadence, grooming tactics, planning without sprints |
 | [`docs/incident-response.md`](docs/incident-response.md) | 🔗 Referenced | Production incidents: detect, restore, investigate, prevent |
 | [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md) | 🔗 Referenced | Day-1 setup guide for new and existing projects |
-| [`docs/testing-placeholder.md`](docs/testing-placeholder.md) | 🔗 Referenced | Testing strategy stub |
+| [`docs/testing.md`](docs/testing.md) | 🔗 Referenced | Testing strategy: what to test, frameworks, coverage, CI integration |
 | [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | 🔁 Vendored | Issue templates (GitHub UI reads them from `.github/`) |
 | [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | 🔁 Vendored | PR checklist (GitHub UI reads it from `.github/`) |

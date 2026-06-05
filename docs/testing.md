@@ -1,14 +1,21 @@
 # Testing Strategy
 
-> **This is intentionally a placeholder.** Testing strategy varies dramatically by project — a vanilla JS site has different needs than a REST API or a CLI tool. This document provides the structure and the questions to answer, not the answers themselves.
+How to think about testing for a sole developer. This document helps you decide *what* to test and *when* to add automation. For *how* to wire tests into a CI pipeline, see [`ci-cd.md`](ci-cd.md).
 
 ---
 
-## Current State
+## The Baseline
 
-This SDLC baseline does not prescribe a testing framework or approach. The **Verify** column in the workflow is human-owned manual verification. This is the minimum viable testing strategy and it works for small projects.
+This SDLC does not prescribe a testing framework. The **Verify** column in the workflow is human-owned manual verification — that's the minimum viable testing strategy and it works for small projects.
 
-As a project grows, you'll want to supplement manual verification with automated tests. This document helps you plan that transition.
+As a project grows, supplement manual verification with automated tests. This document helps you plan that transition.
+
+Even without automated tests, this process gives you:
+
+- **Manual test steps** in the Test Plan field of feature issues
+- **Human verification** in the Verify column (QA role)
+- **Definition of Done** checklists that include regression checking
+- **CI enforcement** when you're ready — see [`ci-cd.md`](ci-cd.md)
 
 ---
 
@@ -104,19 +111,21 @@ If you're adding tests to a project for the first time:
 3. **Add a `test` script** to your `package.json` / `Makefile` / equivalent
 4. **Run it** — if it passes, you have a test suite
 5. **Add tests to new code** going forward (don't try to retroactively test everything)
-6. **Add CI** when you have ~10 tests and want to stop running them manually
+6. **Add CI** when you have ~10 tests and want to stop running them manually — see [`ci-cd.md`](ci-cd.md)
 
 The goal is to build the habit, not to achieve coverage.
 
 ---
 
-## What This Baseline Provides
+## This Doc + CI/CD
 
-Even without automated tests, this SDLC gives you:
+Testing strategy and CI/CD are complementary:
 
-- **Manual test steps** in the Test Plan field of feature issues
-- **Human verification** in the Verify column (QA role)
-- **Definition of Done** checklists that include regression checking
-- **A place to grow** — this document becomes your testing guide once you fill it in
+| This doc (`testing.md`) | CI/CD doc (`ci-cd.md`) |
+|------------------------|----------------------|
+| *What* to test | *How* to automate the checks |
+| *Which* framework to pick | *Where* the framework runs (GitHub Actions) |
+| *When* to add tests (project maturity) | *When* to add CI (pain threshold) |
+| Coverage decisions | Branch protection and gating |
 
-Testing is not a binary. You don't need 100% coverage on day one. You need a process that makes it easy to add tests when you're ready.
+Read this doc first to decide your testing approach. Then read [`ci-cd.md`](ci-cd.md) to automate it.
