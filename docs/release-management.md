@@ -1,5 +1,7 @@
 # Release Management
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 How to go from "code is verified" to "users have it." This covers versioning, release checklists, changelogs, and hotfixes for a sole developer.
 
 ---
@@ -24,40 +26,60 @@ Most sole-dev projects start as **Manual** and graduate to **Continuous** as CI/
 
 ### When to version
 
-Use explicit versions (tags + GitHub Releases) when **any** of these are true:
+Version when users can be on different copies of your software — anything downloaded, installed, or uploaded as an artifact: games, desktop apps, CLIs, libraries, store builds. The version is the shared vocabulary between you, your users, and your bug reports ("which build are you on?").
 
-- Users can be on different versions (libraries, CLIs, mobile apps)
-- You need to point someone at "what changed since you last updated"
-- You want a rollback target ("go back to v1.3.2")
-- Your deployment pipeline consumes a tag
+One carve-out: a **continuously deployed service** (core+ops) may skip version numbers. Every merge to `main` is live, so the commit SHA and deploy timestamp identify a release. If that's you, skip to the [Release Checklist](#release-checklist).
 
-If none apply — e.g., a web app deployed on every merge — **you don't need version numbers**. Git SHAs and deploy timestamps are enough. Skip to the [Release Checklist](#release-checklist).
+### The version: `MAJOR.MINOR.PATCH`
 
-### Versioning scheme
+Keep the familiar shape. Define the bumps by **what the consumer experiences** — API compatibility is the right lens only when the consumer is a program.
 
-Use [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`) for libraries and CLIs. Use [Calendar Versioning](https://calver.org/) (`YYYY.MM.DD` or `YYYY.MM.PATCH`) for apps where "compatibility" isn't meaningful.
+| Bump | Libraries and CLIs ([semver](https://semver.org/)) | Apps and games |
+|------|-----------------------------------------------------|----------------|
+| **MAJOR** | Breaking API or CLI change | The user would call it a different product, **or** saved data / file formats no longer load |
+| **MINOR** | New capability, backward compatible | New user-visible content or capability; saved data still works |
+| **PATCH** | Bug fix, no new behavior | Fixes and tuning; nothing new to discover |
 
-For a sole developer, the practical distinction:
+**1.0 is a declaration, not a threshold you drift across.** 1.0 means "the version you'd hand a stranger with no caveats." Before that it is 0.x, however many features it has. Bumping to 1.0 is a decision — record it in the changelog like any other.
 
-| Change type | Semver | Calver |
-|-------------|--------|--------|
-| Breaking change | Bump MAJOR | Just ship it (date changes) |
-| New feature | Bump MINOR | Just ship it |
-| Bug fix | Bump PATCH | Just ship it |
+[Calendar versioning](https://calver.org/) (`YYYY.MM.PATCH`) remains valid for apps where compatibility is never a question and "how recent is this?" is all a version needs to say.
 
-Semver forces you to think about compatibility. Calver forces you to ship. Pick based on whether your users need to reason about upgrade safety.
+### The build number
+
+Projects that ship artifacts — zips, installers, store builds — also keep a **build number**: a monotonic integer that identifies one artifact and never resets. The version says what changed; the build says which file. Show them together: `1.2.0 (build 36)`.
+
+- Every artifact that goes out the door gets the next number — hotfixes and re-cuts included.
+- A version spans many builds (`0.9.0 (build 31)` … `0.9.0 (build 34)`); a build never spans versions.
+- Put it on the title screen, about box, or `--version` output, so a bug-report screenshot identifies the exact artifact.
+- Continuously deployed services don't need one — the commit SHA is their build number.
+
+### Single source of truth
+
+Exactly **one** machine-readable place holds the version (and the build number, if used):
+
+| Project | Version | Build number |
+|---------|---------|--------------|
+| npm / Node | `package.json` → `version` | `package.json` → `config.build`, or a `BUILD` file |
+| Rust | `Cargo.toml` → `version` | a `BUILD` file |
+| Anything else | a `VERSION` file at the repo root | a `BUILD` file |
+
+Everything else is **derived** from it by the release script: the constant the app displays, the git tag, the changelog header, the artifact filename. A no-build-step project stamps the constant into the source at release time (read the source of truth, write the constant, commit both in the release commit). Nothing is hand-edited in two places.
+
+> **The anti-pattern: two sources, one stale.** A `version` in `package.json` *and* a `VERSION = '1.1.0'` in the code, both edited by hand, will disagree within a month — and the one users see will be the wrong one. If a human has to remember to update a second place, the second place is already wrong.
 
 ### Tagging
 
 ```bash
-# Create an annotated tag
+# Version tag — annotated, from main
 git tag -a v1.2.0 -m "v1.2.0: Add search filtering, fix mobile layout"
-
-# Push the tag
 git push origin v1.2.0
+
+# Artifact projects: also tag the build, so a reported build number maps straight to a commit
+git tag -a build-36 -m "build 36 (v1.2.0)"
+git push origin build-36
 ```
 
-Tag from `main` after all issues for the release are in **Done**. Never tag from a feature branch.
+Tag from `main` after all issues for the release are in **Done**. Never tag from a feature branch. Let the release script create tags from the source of truth — a hand-typed tag is the second source you just promised not to have.
 
 ---
 
@@ -67,9 +89,9 @@ Run this before declaring a release. For continuous-deploy projects, this is you
 
 ### Pre-release
 
-- [ ] **All target issues are Done** — every issue tagged for this milestone is closed and verified
+- [ ] **All target issues are Done** — every issue tagged for this milestone is closed and verified (or, without milestones, every issue you meant to ship)
 - [ ] **No open blockers** — check `priority:high` issues; none should be unresolved
-- [ ] **Tests pass** — automated suite (if any) is green; manual verification complete
+- [ ] **The gate passes** — local test command (core) or CI (core+ops) is green; manual verification complete
 - [ ] **Documentation is current** — spec, CLAUDE.md, and README reflect the shipped state
 - [ ] **CHANGELOG updated** — new entry describes what changed (see [Changelog](#changelog) below)
 - [ ] **No orphaned branches** — feature branches for shipped work are deleted
@@ -79,7 +101,7 @@ Run this before declaring a release. For continuous-deploy projects, this is you
 - [ ] **Tag created** (if versioned) — annotated tag on `main`
 - [ ] **GitHub Release created** (if versioned) — with changelog body
 - [ ] **Deployed** — to production environment (however that works for your project)
-- [ ] **Milestone closed** — in GitHub, close the milestone for this release
+- [ ] **Milestone closed** (if you use milestones) — in GitHub, close the milestone for this release
 
 ### Post-release
 

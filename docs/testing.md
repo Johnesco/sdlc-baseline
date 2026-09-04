@@ -1,6 +1,8 @@
 # Testing Strategy
 
-How to think about testing for a sole developer. This document helps you decide *what* to test and *when* to add automation. For *how* to wire tests into a CI pipeline, see [`ci-cd.md`](ci-cd.md).
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
+How to think about testing for a sole developer. This document helps you decide *what* to test and *when* to add automation. For *how* to wire tests into a CI pipeline (core+ops), see [`ci-cd.md`](ci-cd.md). Core projects need only the local gate below.
 
 ---
 
@@ -15,7 +17,20 @@ Even without automated tests, this process gives you:
 - **Manual test steps** in the Test Plan field of feature issues
 - **Human verification** in the Verify column (QA role)
 - **Definition of Done** checklists that include regression checking
-- **CI enforcement** when you're ready — see [`ci-cd.md`](ci-cd.md)
+- **A gate** — the local test command (core), or CI (core+ops — see [`ci-cd.md`](ci-cd.md))
+
+---
+
+## The local gate (core)
+
+Core projects have no CI to stop a bad release. The gate is **one command, run locally**:
+
+1. **Name it.** `npm test` (or `make test`, `cargo test`, `pytest`) runs everything that counts. One entry point — nobody should have to remember which scripts matter.
+2. **It must pass before a release tag.** No green gate, no tag, no artifact. Let the release script run it and refuse to cut a build when it fails.
+3. **Run it on request, not on every commit.** Before a release, after touching anything the suite covers, or when the human asks. The point is that it is impossible to *ship* without it — not that it runs constantly.
+4. **Say what you ran.** The Definition of Done asks how "no regressions" was verified. "Ran `npm test`, 17 suites green" is an answer; "should be fine" is not.
+
+That's the whole gate. When the project grows a service, CI runs the same command — see [`ci-cd.md`](ci-cd.md).
 
 ---
 
@@ -47,14 +62,14 @@ Even without automated tests, this process gives you:
 
 ### 3. When to run tests
 
-| Trigger | What Runs | Purpose |
+| Trigger | What runs | Profile |
 |---------|-----------|---------|
-| Before commit (pre-commit hook) | Linting, formatting | Catch style issues early |
-| Before push (pre-push hook) | Unit tests | Catch broken logic before sharing |
-| On PR (CI) | All tests | Gate merges on passing tests |
-| On merge to main (CI) | All tests + deploy | Final safety net |
+| On request — before a release tag, after touching covered code, when asked | The local gate | core (required) |
+| Before commit / push (git hooks) | Lint, formatting, unit tests | either (optional) |
+| On PR (CI) | All tests | core+ops |
+| On merge to main (CI) | All tests + deploy | core+ops |
 
-**Decision:** Start with "run tests manually" and add automation when the pain of forgetting justifies the setup cost. See [`ci-cd.md`](ci-cd.md) for how to wire tests into a GitHub Actions pipeline.
+**Decision:** Core projects stop at the first row and let the release script enforce it. Add CI when the project runs a service — see [`ci-cd.md`](ci-cd.md).
 
 ### 4. What coverage target
 
@@ -93,7 +108,7 @@ The testing checklist in the PR template can be expanded:
 ```
 - [ ] New tests written for this change
 - [ ] All tests pass locally
-- [ ] CI passes (if configured)
+- [ ] The gate passes (local test command; CI for core+ops)
 ```
 
 ### Commit conventions
@@ -111,15 +126,15 @@ If you're adding tests to a project for the first time:
 3. **Add a `test` script** to your `package.json` / `Makefile` / equivalent
 4. **Run it** — if it passes, you have a test suite
 5. **Add tests to new code** going forward (don't try to retroactively test everything)
-6. **Add CI** when you have ~10 tests and want to stop running them manually — see [`ci-cd.md`](ci-cd.md)
+6. **Wire the gate** — core: make the `test` script the one command and have the release script run it; core+ops: add CI — see [`ci-cd.md`](ci-cd.md)
 
 The goal is to build the habit, not to achieve coverage.
 
 ---
 
-## This Doc + CI/CD
+## This Doc + the Gate
 
-Testing strategy and CI/CD are complementary:
+Testing strategy is core; automating it in CI is ops:
 
 | This doc (`testing.md`) | CI/CD doc (`ci-cd.md`) |
 |------------------------|----------------------|
@@ -128,4 +143,4 @@ Testing strategy and CI/CD are complementary:
 | *When* to add tests (project maturity) | *When* to add CI (pain threshold) |
 | Coverage decisions | Branch protection and gating |
 
-Read this doc first to decide your testing approach. Then read [`ci-cd.md`](ci-cd.md) to automate it.
+Read this doc first. Core projects then wire the local gate (above). Core+ops projects read [`ci-cd.md`](ci-cd.md) to automate it.

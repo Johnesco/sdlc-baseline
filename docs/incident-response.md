@@ -1,5 +1,7 @@
 # Incident Response
 
+> **Profile:** ops — applies only to core+ops projects. See [profiles.md](profiles.md).
+
 What to do when something breaks in production. This is the sole-developer version — no war rooms, no on-call rotations, just a clear sequence for restoring service and preventing recurrence.
 
 ---
@@ -42,6 +44,8 @@ Before acting, spend 60 seconds understanding the scope:
 - **Is data at risk?** If there's any chance of data loss or corruption, that escalates everything.
 
 ### Severity (in the moment)
+
+This is 60-second triage shorthand, not a second scale. When you file the bug, use [severity-matrix.md](severity-matrix.md): Total outage → Critical · Partial outage → High · Degraded → Medium · Cosmetic → Low.
 
 | Severity | Description | Response |
 |----------|-------------|----------|

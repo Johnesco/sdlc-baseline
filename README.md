@@ -4,7 +4,11 @@
 
 No heavyweight tools. No enterprise bloat. Just a clear, repeatable process built on GitHub Issues, Projects, and a discipline that treats documentation as a first-class deliverable.
 
+**Two profiles, one standard.** Every doc is tagged `core` or `ops`. `core` is every project — a game on itch.io, a desktop app, a library. `core+ops` adds deployment, CI/CD and incident response for projects that run a service. Declare it in one line in `CLAUDE.md`; undeclared means core. See [`docs/profiles.md`](docs/profiles.md).
+
 ---
+
+> **New to working this way?** Open [`docs/start-here.html`](docs/start-here.html) in a browser. It is the orientation layer — why a process is worth it when you are one person, the loop, the three non-negotiables, and a first week that doesn't try to adopt everything at once. It is the only document here meant to be read front to back.
 
 ## How to Consume
 
@@ -16,37 +20,52 @@ When sdlc-baseline ships changes, [`CHANGELOG.md`](CHANGELOG.md) is the human-fa
 
 The **Type** column tells you how to consume each artifact:
 
-- **🔁 Vendored** — must be copied into your project (GitHub tooling reads it from a fixed path)
+- **🔁 Vendored** — must be copied into your project: GitHub's tooling reads it from a fixed path, or it runs from inside your repo
 - **🔗 Referenced** — link to the canonical version from your project; never copy
 - **📋 Template** — copy-paste source you adapt per project
 
+### Core — every project
+
 | Artifact | Type | Purpose |
 |----------|------|---------|
-| [`CLAUDE-TEMPLATE.md`](CLAUDE-TEMPLATE.md) | 📋 Template | Slim CLAUDE.md skeleton — copy and customize once per project |
+| [`CLAUDE-TEMPLATE.md`](CLAUDE-TEMPLATE.md) | 📋 Template | Slim CLAUDE.md skeleton — declares the profile; copy and customize once per project |
+| [`docs/start-here.html`](docs/start-here.html) | 🔗 Referenced | Orientation for anyone new to working inside an SDLC — read this one front to back |
+| [`docs/profiles.md`](docs/profiles.md) | 🔗 Referenced | The two profiles: manifest, what core relaxes and keeps, how to declare and upgrade |
 | [`docs/consumption.md`](docs/consumption.md) | 🔗 Referenced | How downstream projects consume sdlc-baseline (vendored vs referenced) |
-| [`docs/workflow.md`](docs/workflow.md) | 🔗 Referenced | The 7-step ticket-first development workflow |
+| [`docs/workflow.md`](docs/workflow.md) | 🔗 Referenced | The 7-step ticket-first workflow, with the decide-before-you-build gate |
 | [`docs/roles.md`](docs/roles.md) | 🔗 Referenced | Role definitions and AI collaboration model |
-| [`docs/board-setup.md`](docs/board-setup.md) | 🔗 Referenced | GitHub Projects board creation guide |
-| [`docs/labels.md`](docs/labels.md) | 🔗 Referenced | Label taxonomy with `gh` CLI setup commands |
-| [`docs/commit-conventions.md`](docs/commit-conventions.md) | 🔗 Referenced | Commit, PR, and branch naming conventions |
-| [`docs/definition-of-done.md`](docs/definition-of-done.md) | 🔗 Referenced | Definition of Done checklists by issue type |
-| [`docs/adrs.md`](docs/adrs.md) | 🔗 Referenced | ADR protocol, format, threshold rule |
+| [`docs/definition-of-done.md`](docs/definition-of-done.md) | 🔗 Referenced | Definition of Done checklists by issue type — verification-first |
 | [`docs/severity-matrix.md`](docs/severity-matrix.md) | 🔗 Referenced | Bug severity and priority matrix |
-| [`docs/release-management.md`](docs/release-management.md) | 🔗 Referenced | Versioning, releases, changelogs, hotfixes, milestones |
+| [`docs/commit-conventions.md`](docs/commit-conventions.md) | 🔗 Referenced | Commit, PR, and branch naming conventions |
+| [`docs/release-management.md`](docs/release-management.md) | 🔗 Referenced | Versioning, build numbers, releases, changelogs, hotfixes, milestones |
+| [`docs/testing.md`](docs/testing.md) | 🔗 Referenced | Testing strategy and the local gate |
+| [`docs/backlog-hygiene.md`](docs/backlog-hygiene.md) | 🔗 Referenced | Review cadence, grooming tactics, planning without sprints |
+| [`docs/adrs.md`](docs/adrs.md) | 🔗 Referenced | ADR protocol, threshold rule, the six-line stub |
+| [`docs/security-basics.md`](docs/security-basics.md) | 🔗 Referenced | Secrets, dependencies, XSS; server-only sections marked `(ops)` |
+| [`docs/board-setup.md`](docs/board-setup.md) | 🔗 Referenced | GitHub Projects board — if you use one |
+| [`docs/labels.md`](docs/labels.md) | 🔗 Referenced | Label taxonomy with `gh` CLI setup commands |
+| [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md) | 🔗 Referenced | Day-1 setup guide for new and existing projects |
+| [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
+
+### Ops — add for projects that run a service
+
+| Artifact | Type | Purpose |
+|----------|------|---------|
 | [`docs/deployment.md`](docs/deployment.md) | 🔗 Referenced | Deploy patterns, environments, config/secrets, rollback |
 | [`docs/ci-cd.md`](docs/ci-cd.md) | 🔗 Referenced | CI/CD pipelines, GitHub Actions, starter workflows, branch protection |
-| [`docs/backlog-hygiene.md`](docs/backlog-hygiene.md) | 🔗 Referenced | Review cadence, grooming tactics, planning without sprints |
 | [`docs/incident-response.md`](docs/incident-response.md) | 🔗 Referenced | Production incidents: detect, restore, investigate, prevent |
-| [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md) | 🔗 Referenced | Day-1 setup guide for new and existing projects |
-| [`docs/security-basics.md`](docs/security-basics.md) | 🔗 Referenced | Secrets management, common vulnerabilities, security habits |
-| [`docs/testing.md`](docs/testing.md) | 🔗 Referenced | Testing strategy: what to test, frameworks, coverage, CI integration |
-| [`CHANGELOG.md`](CHANGELOG.md) | 🔗 Referenced | Release notes for downstream projects |
+
+### Vendored files and templates (both profiles)
+
+| Artifact | Type | Purpose |
+|----------|------|---------|
 | [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) | 🔁 Vendored | Issue templates (GitHub UI reads them from `.github/`) |
-| [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | 🔁 Vendored | PR checklist (GitHub UI reads it from `.github/`) |
+| [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | 🔁 Vendored | PR checklist — for when you use PRs |
 | [`scripts/setup-labels.sh`](scripts/setup-labels.sh) | 🔁 Vendored | Runs against the consuming repo's labels |
-| [`scripts/sync-github-templates.sh`](scripts/sync-github-templates.sh) | 📋 Template | Helper for downstream projects to pull the latest vendored files |
-| [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | 📋 Template | Worked example of a slim, project-specific CLAUDE.md |
+| [`scripts/sync-github-templates.sh`](scripts/sync-github-templates.sh) | 🔁 Vendored | Pulls the latest vendored files; copied verbatim and run from your repo — nothing to adapt |
+| [`examples/CLAUDE-example.md`](examples/CLAUDE-example.md) | 📋 Template | Worked example of a slim, core-profile CLAUDE.md |
 | [`examples/functional-spec-template.md`](examples/functional-spec-template.md) | 📋 Template | Blank functional specification skeleton |
+| [`examples/adr-stub.md`](examples/adr-stub.md) | 📋 Template | The six-line ADR stub written before code |
 | [`examples/adr-template.md`](examples/adr-template.md) | 📋 Template | Copy-paste ADR skeleton (Nygard format) |
 | [`examples/adr-example.md`](examples/adr-example.md) | 📋 Template | A worked ADR example from a real project |
 
@@ -54,7 +73,7 @@ The **Type** column tells you how to consume each artifact:
 
 > **Using Claude Code?** Paste the [Quick Launch prompt](docs/kickoff-checklist.md#quick-launch) into your first session and Claude handles the setup.
 >
-> For the full step-by-step walkthrough (including deployment, CI/CD, and board setup), see [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md).
+> For the full step-by-step walkthrough (including the ops phases), see [`docs/kickoff-checklist.md`](docs/kickoff-checklist.md).
 
 **1. Vendor the files GitHub's tooling needs**
 
@@ -74,14 +93,14 @@ Customize `CLAUDE.md` with your project identity, file structure, milestones, an
 
 When sdlc-baseline updates, run `bash scripts/sync-github-templates.sh` to pull the latest vendored artifacts. Everything else updates automatically by virtue of being linked, not copied.
 
-**2. Set up your GitHub Projects board**
+**2. Optional — set up a GitHub Projects board**
 
-Follow [`docs/board-setup.md`](docs/board-setup.md) to create a 5-column kanban board:
+Core projects can skip this: `gh issue list --state open` is the board. If you want one, follow [`docs/board-setup.md`](docs/board-setup.md) to create a 5-column kanban board:
 **Backlog** | **Ready** | **In Progress** | **Verify** | **Done**
 
 **3. Start building**
 
-Every change follows the same cycle: ticket first, build, document, verify.
+Every change follows the same cycle: ticket first, decide, build, document, verify.
 
 ---
 
@@ -107,7 +126,7 @@ flowchart LR
     style G fill:#1abc9c,color:#fff
 ```
 
-> **Key rule:** No code without a ticket. A change without a documentation update is incomplete.
+> **Key rules:** No code without a ticket. No build without a decision. A change without a documentation update is incomplete.
 
 See [`docs/workflow.md`](docs/workflow.md) for the full guide with examples.
 
@@ -117,7 +136,7 @@ See [`docs/workflow.md`](docs/workflow.md) for the full guide with examples.
 
 This process supports a solo developer wearing multiple hats, optionally assisted by an AI coding agent (like Claude).
 
-| Role | Typical Owner | Responsibilities | Board Columns |
+| Role | Typical Owner | Responsibilities | Board Columns (if used) |
 |------|---------------|------------------|---------------|
 | **PO** (Product Owner) | Human | Prioritize backlog, accept completed work | Backlog, Done |
 | **BA** (Business Analyst) | Human or AI | Scope requirements, write acceptance criteria | Backlog (refinement), Ready |
@@ -131,7 +150,7 @@ See [`docs/roles.md`](docs/roles.md) for detailed role definitions and "hat-swit
 
 ---
 
-## Board Columns
+## Board Columns (if you use a board)
 
 ```
  Backlog  -->  Ready  -->  In Progress  -->  Verify  -->  Done
@@ -196,17 +215,19 @@ This prevents the AI from guessing your intent and keeps the workflow predictabl
 
 ### New Project
 1. Copy `CLAUDE-TEMPLATE.md` as your `CLAUDE.md`
-2. Fill in the project-specific sections (identity, file structure, patterns)
-3. Copy `.github/` templates
-4. Create your Projects board ([guide](docs/board-setup.md))
-5. Create labels ([guide](docs/labels.md))
-6. Start building with the ticket-first workflow
+2. Declare your profile in `CLAUDE.md` — `core` unless the project runs a service ([guide](docs/profiles.md))
+3. Fill in the project-specific sections (identity, file structure, patterns)
+4. Copy `.github/` templates
+5. Create your Projects board — optional in core ([guide](docs/board-setup.md))
+6. Create labels ([guide](docs/labels.md))
+7. Start building with the ticket-first workflow
 
 ### Existing Project
 1. Copy the workflow section from `CLAUDE-TEMPLATE.md` into your existing `CLAUDE.md`
-2. Add the issue templates to `.github/ISSUE_TEMPLATE/`
-3. Create a Projects board and add existing issues
-4. Adopt the workflow going forward (no need to retrofit)
+2. Declare your profile in `CLAUDE.md` ([guide](docs/profiles.md))
+3. Add the issue templates to `.github/ISSUE_TEMPLATE/`
+4. Optional: create a Projects board and add existing issues
+5. Adopt the workflow going forward (no need to retrofit)
 
 ### Minimal (Just the Workflow)
 1. Read [`docs/workflow.md`](docs/workflow.md)
@@ -217,12 +238,11 @@ This prevents the AI from guessing your intent and keeps the workflow predictabl
 
 ## Tested in Production
 
-This process was developed and battle-tested while building the [Austin Karaoke Directory](https://github.com/Johnesco/karaokedirectory) — a vanilla JavaScript web app with 70+ venues, multiple views, and a full documentation portal.
+Two projects shaped this standard.
 
-Every pattern in this repo was extracted from real usage:
-- The `gh project item-add` gotcha? Discovered after 5 issues silently missed the board.
-- The "Claude cannot QA its own work" rule? Learned the hard way.
-- The 7-step workflow? Refined over dozens of tickets across months of development.
+The [Austin Karaoke Directory](https://github.com/Johnesco/karaokedirectory) — a vanilla JavaScript web app with 70+ venues, multiple views, and a full documentation portal — is where the process was born. The `gh project item-add` gotcha was discovered after 5 issues silently missed the board; "Claude cannot QA its own work" was learned the hard way; the 7-step workflow was refined over dozens of tickets across months of development.
+
+Pavement Pursuit (private repo) — a browser racing game shipped to itch.io as numbered builds — never adopted this standard and out-shipped every project that did: 500+ commits, 50+ ADRs, 27 tagged builds, one test command, no board, no CI. It is the source of the *decide before you build* rule, the local gate, and the build-number versioning model. The core profile exists so a project like it can adopt this standard without taking on the ops layer.
 
 ---
 

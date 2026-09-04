@@ -1,5 +1,9 @@
 # GitHub Projects Board Setup
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
+> **Optional in core.** For one person, `gh issue list --state open` is the board. If you do use a board, everything below applies unchanged — including Step 4.
+
 Step-by-step guide to creating the 5-column kanban board that drives this workflow.
 
 ---

@@ -1,5 +1,7 @@
 # Label Taxonomy
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 A consistent labeling system for GitHub Issues. Labels are grouped into four categories: **Type**, **Area**, **Priority**, and **Resolution**.
 
 ---

@@ -1,5 +1,7 @@
 # Project Kickoff Checklist
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 A step-by-step guide for setting up a new project (or adopting this SDLC in an existing one). Work through it top to bottom — each step builds on the previous one.
 
 ---
@@ -11,21 +13,24 @@ Open a Claude Code session in your new (or existing) project directory and paste
 ```
 Set up this project using the sdlc-baseline process.
 
-sdlc-baseline location: C:\code\sdlc-baseline
+sdlc-baseline location: [local clone path, e.g. ~/code/sdlc-baseline]
 (or: https://github.com/Johnesco/sdlc-baseline)
 
 Project name: [your project name]
 Purpose: [one sentence — what does it do?]
 Stack: [language, framework, key dependencies]
+Profile: [core | core+ops — core unless the project runs a service]
 Repo: [GitHub URL, or "create one"]
 
 Follow the kickoff checklist in sdlc-baseline/docs/kickoff-checklist.md.
-Copy the vendored files, create CLAUDE.md from the template, set up
-labels and the project board, and fill in project identity together
-with me. Skip deployment and CI/CD for now — I'll add those later.
+Copy the vendored files, create CLAUDE.md from the template with the
+profile declared, set up labels (and a project board only if I say I
+want one), name the test command and the version's source of truth, and
+fill in project identity together with me. If core, Phases 3-4 don't
+apply; if core+ops, skip them for now — I'll add those later.
 ```
 
-Claude will walk through the phases below, copying files, running setup commands, and prompting you for the project-specific details it can't infer (milestones, architecture decisions, board IDs).
+Claude will walk through the phases below, copying files, running setup commands, and prompting you for the project-specific details it can't infer (profile, milestones, architecture decisions, board IDs if you use a board).
 
 After this first session, every future session reads CLAUDE.md and knows the process automatically.
 
@@ -68,6 +73,12 @@ After this first session, every future session reads CLAUDE.md and knows the pro
   ```
   That's enough to start. Entries accumulate here as you close issues. See [release-management.md](release-management.md#changelog).
 
+- [ ] **Name the test command** — one command that runs everything that counts (`npm test`, `make test`, `pytest`). It is the gate: it must pass before any release tag. See [testing.md — The local gate](testing.md#the-local-gate-core).
+
+- [ ] **Pick the version's source of truth** — exactly one machine-readable place holds the version (`package.json` `version`, a `VERSION` file), plus a build number if you ship artifacts. Everything else derives from it. See [release-management.md — Single source of truth](release-management.md#single-source-of-truth).
+
+- [ ] **Create `docs/adr/README.md`** — an empty ADR index, so the first decision has somewhere to go. See [adrs.md — The six-line stub](adrs.md#the-six-line-stub--decide-before-you-build).
+
 - [ ] **Create .gitignore** — include `.env`, `.env.local`, IDE files, OS files, build output.
 
 - [ ] **Create .env.example** (if the project will have any configuration)
@@ -91,15 +102,17 @@ After this first session, every future session reads CLAUDE.md and knows the pro
   ```
   Optionally delete GitHub's default labels first. See [labels.md](labels.md).
 
-- [ ] **Create the Projects board** — follow [board-setup.md](board-setup.md):
+- [ ] **Create the Projects board** (optional in core — `gh issue list --state open` is the board) — follow [board-setup.md](board-setup.md):
   - 5 columns: Backlog → Ready → In Progress → Verify → Done
   - Enable automations (item added → Backlog, item closed → Done, item reopened → In Progress, PR merged → Done)
 
-- [ ] **Record your Project IDs in CLAUDE.md** — board ID, status field ID, and status option IDs. Your AI assistant needs these to move cards programmatically. See [board-setup.md — Find Your Project IDs](board-setup.md#step-5-find-your-project-ids-advanced).
+- [ ] **Record your Project IDs in CLAUDE.md** (if you use a board) — board ID, status field ID, and status option IDs. Your AI assistant needs these to move cards programmatically. See [board-setup.md — Find Your Project IDs](board-setup.md#step-5-find-your-project-ids-advanced).
 
-- [ ] **Create your first milestone** — name it after the first logical batch of work (e.g., "MVP", "v0.1", or a feature theme).
+- [ ] **Create your first milestone** (optional) — name it after the first logical batch of work (e.g., "MVP", "v0.1", or a feature theme).
 
-### Phase 3: Deployment (when you're ready to go live)
+### Phase 3: Deployment (ops)
+
+Core projects: not applicable — your release artifact is your production.
 
 These steps can wait until you have something to deploy. Don't set up infrastructure for code that doesn't exist yet.
 
@@ -109,7 +122,9 @@ These steps can wait until you have something to deploy. Don't set up infrastruc
 - [ ] **Know how to rollback** — find the "redeploy previous" button before you need it
 - [ ] **Write a 3-step smoke test** for your critical path
 
-### Phase 4: CI/CD (when tests or builds exist)
+### Phase 4: CI/CD (ops)
+
+Core projects: not applicable — the local test command is your gate.
 
 Don't add CI on day one unless you already have a test suite. Add it when the pain of forgetting to run checks justifies the 10 minutes of setup.
 
@@ -134,7 +149,7 @@ Adopting this SDLC in a project that already has code and possibly some issues.
 
 - [ ] **Create CHANGELOG.md** — start with `[Unreleased]`. You don't need to backfill history.
 
-### Phase 2: Set up the board (15 minutes)
+### Phase 2: Set up the board (optional in core, 15 minutes)
 
 - [ ] **Create the Projects board** following [board-setup.md](board-setup.md)
 
@@ -152,12 +167,12 @@ Adopting this SDLC in a project that already has code and possibly some issues.
   - Add area labels if obvious
   - Move refined issues to Ready; leave vague ones in Backlog
 
-- [ ] **Record Project IDs in CLAUDE.md**
+- [ ] **Record Project IDs in CLAUDE.md** (if you use a board)
 
 ### Phase 3: Adopt the workflow going forward
 
 - [ ] **Use the 7-step workflow for new work** — don't try to retrofit old issues
-- [ ] **Set up deployment and CI/CD** when you're ready — see Phases 3-4 under New Project above
+- [ ] **Set up deployment and CI/CD** (core+ops) when you're ready — see Phases 3-4 under New Project above
 
 > **Don't boil the ocean.** The biggest risk with adopting a process mid-project is trying to fix everything at once. Get the board set up, start following the workflow for new tickets, and improve incrementally.
 
@@ -168,9 +183,9 @@ Adopting this SDLC in a project that already has code and possibly some issues.
 After setup, verify everything is wired up:
 
 - [ ] Create a test issue using one of the templates — does the template render correctly?
-- [ ] Add it to the board — does it land in Backlog?
+- [ ] Add it to the board (if you use a board) — does it land in Backlog?
 - [ ] Close it — does it move to Done?
-- [ ] Open a test PR — does the PR template appear? Does CI run (if configured)?
+- [ ] Open a test PR — does the PR template appear? Does CI run (CI: core+ops)?
 - [ ] Delete the test issue and PR
 
 ---
@@ -181,12 +196,12 @@ These are part of the full SDLC but should be added on-demand, not on day one:
 
 | Artifact | When to add |
 |----------|------------|
-| ADRs (`docs/adr/`) | When you make your first architectural decision that meets the [threshold rule](adrs.md#threshold-rule--when-to-write-one) |
+| ADRs (`docs/adr/`) | The index on day one (Phase 1); the first stub at the first change above a tuning tweak; a full ADR when the [threshold rule](adrs.md#threshold-rule--when-to-write-one) applies |
 | Functional spec (`docs/functional-spec.md`) | When the project has enough features that you need a single source of truth for behavior |
-| Staging environment | When you have paying users or risky deploys |
-| Uptime monitoring | When the site is live and users depend on it |
+| Staging environment | (ops) When you have paying users or risky deploys |
+| Uptime monitoring | (ops) When the site is live and users depend on it |
 | Backlog grooming cadence | When you have 10+ open issues |
-| Incident response prep | When you have users who would notice an outage |
+| Incident response prep | (ops) When you have users who would notice an outage |
 
 The goal is a working process on day one, not a perfect process. Add layers as the project grows.
 
@@ -216,8 +231,8 @@ my-project/
 │   ├── setup-labels.sh                    # Vendored (run once, keep for reference)
 │   └── sync-github-templates.sh           # Vendored (run when sdlc-baseline updates)
 └── docs/
-    ├── adr/                               # Created when first ADR is needed
+    ├── adr/                               # Index created day one; ADRs as decisions arrive
     └── functional-spec.md                 # Created when feature complexity warrants it
 ```
 
-Everything else — workflow, roles, DoD, commit conventions, severity matrix, release management, deployment, CI/CD, backlog hygiene, incident response, ADR protocol — lives canonically in sdlc-baseline and is linked from your CLAUDE.md. See [consumption.md](consumption.md).
+Everything else — workflow, roles, DoD, commit conventions, severity matrix, release management, testing, backlog hygiene, ADR protocol, profiles, and (for core+ops) deployment, CI/CD and incident response — lives canonically in sdlc-baseline and is linked from your CLAUDE.md. See [consumption.md](consumption.md) and [profiles.md](profiles.md).

@@ -1,5 +1,7 @@
 # Deployment
 
+> **Profile:** ops — applies only to core+ops projects. See [profiles.md](profiles.md).
+
 How to get code from your repository to a running environment. This covers deployment patterns, environment management, configuration, rollback, and smoke testing for a sole developer.
 
 ---

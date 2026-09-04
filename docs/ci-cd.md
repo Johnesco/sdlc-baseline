@@ -1,5 +1,7 @@
 # CI/CD
 
+> **Profile:** ops — applies only to core+ops projects. See [profiles.md](profiles.md).
+
 Continuous Integration and Continuous Deployment for a sole developer. This covers when to add automation, what to automate, GitHub Actions basics, and starter workflows.
 
 ---

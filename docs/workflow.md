@@ -1,14 +1,18 @@
 # The 7-Step Ticket-First Workflow
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 Every software change — feature, bug fix, refactor, documentation update, or data change — follows this sequence. No step may be skipped.
 
 ---
 
 ## The Steps
 
+> *Board status* lines describe the column the ticket sits in **if you use a board**. Without one they are simply the ticket's state.
+
 ### Step 1: Capture as a Ticket
 
-**What:** Create a GitHub Issue before any other work begins.
+**What:** Create the ticket before any other work begins. The ticket is a GitHub Issue — always for bugs, and the default for everything else — or, for a decision, a six-line ADR stub (see [adrs.md](adrs.md#the-six-line-stub--decide-before-you-build)). Both count as "the ticket".
 
 **Who:** PO (decides what to build) or BA (drafts the ticket)
 
@@ -16,7 +20,7 @@ Every software change — feature, bug fix, refactor, documentation update, or d
 - Clear, descriptive title
 - Relevant labels (type + area + priority)
 - Acceptance criteria (even if rough)
-- Milestone assignment
+- Milestone assignment (if you use milestones)
 
 **Example:**
 ```bash
@@ -27,13 +31,13 @@ gh issue create \
   --body "Users should be able to upload a profile avatar..."
 ```
 
-> **CRITICAL: Add to Project Board**
+> **If you use a board: add the ticket to it**
 >
 > `gh issue create` does **NOT** automatically add issues to your GitHub Projects board. You must run this immediately after creating the issue:
 > ```bash
 > gh project item-add [PROJECT_NUMBER] --owner [OWNER] --url [ISSUE_URL]
 > ```
-> An issue that is not on the board is invisible to the workflow. This is a known GitHub limitation — do not skip this step.
+> An issue that is not on the board is invisible to the board. No board? `gh issue list --state open` is your board — skip this step.
 
 **Board status:** Backlog (set automatically when added to board)
 
@@ -90,6 +94,7 @@ Which is correct? Should I update the spec or the code?
 - Which doc sections will need updating
 - Which files will be touched
 - Any open questions or decisions needed
+- The decision, as a six-line ADR stub, if the change is above a tuning tweak (see the gate below)
 - Revised acceptance criteria (now more specific)
 
 **Example update:**
@@ -107,6 +112,8 @@ Which is correct? Should I update the spec or the code?
 
 **Board status:** Ready (move manually when acceptance criteria are final)
 
+> **Gate — decide before you build.** If the change is above a tuning tweak — it touches more than one file, or it changes behaviour — a six-line ADR stub (Context + Decision) exists before Step 5 begins. Either it *is* the ticket (Step 1) or it was written here. If you can't write the Decision paragraph, the ticket isn't ready: it stays in Backlog. See [adrs.md](adrs.md#the-six-line-stub--decide-before-you-build).
+
 ---
 
 ### Step 5: Implement the Change
@@ -116,7 +123,7 @@ Which is correct? Should I update the spec or the code?
 **Who:** Dev (AI or human)
 
 **Rules:**
-- Reference the ticket number in every commit: `#XX: description`
+- Reference the ticket in every commit: `#XX: description` (or `ADR-NNN: description` when the ticket is an ADR stub)
 - Follow existing code patterns and conventions
 - Read files before editing them
 - Keep changes focused on the ticket scope
@@ -140,7 +147,7 @@ Which is correct? Should I update the spec or the code?
 - Project spec — if any feature, behavior, or data format changed
 - CLAUDE.md — if file structure, patterns, or architecture changed
 - README.md — if public-facing features or setup instructions changed
-- **`docs/adr/`** — if this change makes an architectural choice that's expensive to reverse, where reasonable contributors would consider alternatives, or that future contributors will second-guess. Write a new ADR using [`examples/adr-template.md`](../examples/adr-template.md) and update `docs/adr/README.md`. See [`docs/adrs.md`](adrs.md) for the threshold rule.
+- **`docs/adr/`** — if this change makes an architectural choice that's expensive to reverse, where reasonable contributors would consider alternatives, or that future contributors will second-guess. Complete the ADR: add Consequences to the stub, set Status to Accepted, and update `docs/adr/README.md`. Full format in [`examples/adr-template.md`](../examples/adr-template.md). See [`docs/adrs.md`](adrs.md) for the threshold rule.
 
 **Key rule:** A change without a documentation update is **incomplete**. Documentation updates are part of the definition of done, not a follow-up task.
 
@@ -162,7 +169,7 @@ Which is correct? Should I update the spec or the code?
 
 **Board status:** Verify (move manually when code + docs are complete)
 
-After the human verifies, the issue is closed and the board card moves to **Done** automatically.
+After the human verifies, the issue is closed (and the board card moves to **Done** automatically, if you use one).
 
 ---
 
@@ -209,6 +216,8 @@ Not every change needs the full ceremony. Here's when you can compress:
 
 ## How Steps Map to Board Columns
 
+*If you use a board.* Without one, the columns are the states a ticket passes through.
+
 | Board Column | Workflow Steps | What Happens |
 |-------------|---------------|--------------|
 | **Backlog** | Steps 1-3 | Ticket created, docs reviewed, discrepancies flagged |
@@ -221,10 +230,11 @@ Not every change needs the full ceremony. Here's when you can compress:
 
 ## Key Rules (Summary)
 
-1. **No code without a ticket** — every change starts as a GitHub Issue
-2. **No ticket without a board entry** — `gh project item-add` after every `gh issue create`
-3. **Read before writing** — understand the existing state before changing it
-4. **Flag, don't fix** — discrepancies between code and docs need human decisions
-5. **Docs are not optional** — incomplete documentation = incomplete work
-6. **Verify is human-only** — the person (or AI) who wrote it cannot verify it
-7. **Compress, don't skip** — small changes can move faster, but every step still happens
+1. **No code without a ticket** — an Issue (always, for bugs) or an ADR stub (for decisions)
+2. **If you use a board, no ticket without a board entry** — `gh project item-add` after every `gh issue create`
+3. **Decide before you build** — above a tuning tweak, a six-line ADR stub exists before code
+4. **Read before writing** — understand the existing state before changing it
+5. **Flag, don't fix** — discrepancies between code and docs need human decisions
+6. **Docs are not optional** — incomplete documentation = incomplete work
+7. **Verify is human-only** — the person (or AI) who wrote it cannot verify it
+8. **Compress, don't skip** — small changes can move faster, but every step still happens

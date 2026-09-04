@@ -1,5 +1,7 @@
 # Backlog Hygiene
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 How to keep your issue backlog useful instead of letting it become a graveyard of good intentions. This covers review cadence, grooming tactics, and planning habits for a sole developer.
 
 ---
@@ -85,8 +87,8 @@ Batching reduces context-switching and makes the backlog shorter.
 # All open issues with no milestone — potential orphans
 gh issue list --no-milestone
 
-# All open issues older than 60 days
-gh issue list --search "created:<2026-04-04"
+# All open issues older than 60 days (use a real date)
+gh issue list --search "created:<YYYY-MM-DD"
 
 # All issues in Backlog that have acceptance criteria (ready to promote)
 gh issue list --label "feature" --search "acceptance criteria"
@@ -162,5 +164,5 @@ Backlog hygiene is the maintenance layer around the [7-step workflow](workflow.m
 ## Recommended First Steps
 
 1. **Schedule a monthly reminder** — "Groom the backlog." 15 minutes on your calendar.
-2. **Run the stale-issue scan now** — `gh issue list --search "created:<2026-04-04"` — and close what's no longer relevant.
+2. **Run the stale-issue scan now** — `gh issue list --search "created:<YYYY-MM-DD"` (60 days ago) — and close what's no longer relevant.
 3. **Count your open issues.** If it's over 25, block 30 minutes this week to get it under control.

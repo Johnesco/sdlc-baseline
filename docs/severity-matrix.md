@@ -1,5 +1,9 @@
 # Bug Severity and Priority Matrix
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
+> This is the one severity scale in sdlc-baseline. [incident-response.md](incident-response.md) triages in the moment with plainer words and maps back onto these four levels.
+
 A practical framework for classifying bugs and deciding how urgently to fix them.
 
 ---
@@ -10,10 +14,10 @@ Severity describes **how bad the bug is**. It's an objective assessment of impac
 
 | Level | Label | Description | Examples |
 |-------|-------|-------------|----------|
-| **Critical** | `Critical` | System is down, data loss, or security vulnerability | App won't load, database corruption, XSS vulnerability, payments broken |
-| **High** | `High` | Major feature is broken, no workaround | Search returns no results, login fails, form can't submit |
-| **Medium** | `Medium` | Feature works but with significant issues | Filter resets on page change, slow load times, layout broken on mobile |
-| **Low** | `Low` | Cosmetic or minor inconvenience | Typo in UI, slight misalignment, tooltip shows wrong text |
+| **Critical** | `Critical` | System is down, data loss, or security vulnerability | App won't load, database corruption, XSS vulnerability, payments broken · Game: crashes on launch, save file corrupted, progression permanently blocked |
+| **High** | `High` | Major feature is broken, no workaround | Search returns no results, login fails, form can't submit · Game: a level can't be completed, controls stop responding, a bought upgrade doesn't apply |
+| **Medium** | `Medium` | Feature works but with significant issues | Filter resets on page change, slow load times, layout broken on mobile · Game: frame-rate drops on one stage, audio out of sync, score shown wrong but stored right |
+| **Low** | `Low` | Cosmetic or minor inconvenience | Typo in UI, slight misalignment, tooltip shows wrong text · Game: sprite one pixel off, menu typo, wrong sound on a rare event |
 
 ---
 
@@ -44,6 +48,7 @@ Severity and priority usually align, but not always:
 | Broken feature nobody uses | High | `priority:low` | No users affected |
 | Security flaw in staging | Critical | *(normal)* | Not in production yet |
 | Cosmetic bug right before launch | Low | `priority:high` | Timing matters |
+| Exploit that makes the game more fun | Medium | `priority:low` or `resolution:by-design` | It's a feature until you decide it isn't — decide, then record it |
 
 The PO decides priority. Severity is a fact; priority is a judgment call.
 
@@ -63,7 +68,7 @@ Guidelines, not SLAs. Adjust for your project's context.
 
 ## Using Severity in Bug Reports
 
-The bug issue template (`.github/ISSUE_TEMPLATE/bug.yml`) includes a Severity dropdown with these four levels. When filing a bug:
+The bug issue template (`.github/ISSUE_TEMPLATE/bug.yml`) includes a Severity dropdown whose four option strings are `<Level> — <Description>` copied **verbatim** from the table above. Change one, change both in the same commit; downstream projects receive the template via `scripts/sync-github-templates.sh`. When filing a bug:
 
 1. **Select the severity** based on the descriptions above
 2. **The dev or PO adds a priority label** if it differs from the default mapping

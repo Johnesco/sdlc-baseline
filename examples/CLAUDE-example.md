@@ -1,6 +1,6 @@
 # Notekeeper — Claude Project Memory
 
-> This is a **worked example** of a filled-in `CLAUDE-TEMPLATE.md` for a hypothetical note-taking app. It demonstrates how to adapt the template to a real project.
+> This is a **worked example** of a filled-in `CLAUDE-TEMPLATE.md` for a hypothetical note-taking app. It demonstrates how to adapt the template to a real project. It declares the **core** profile — Notekeeper has no server, so deployment, CI/CD and incident response don't apply. It keeps a board, to show core + board is a valid combination.
 >
 > **Source template:** [`CLAUDE-TEMPLATE.md`](../CLAUDE-TEMPLATE.md)
 
@@ -84,22 +84,7 @@ document.addEventListener('note:selected', (e) => loadNote(e.detail.id));
 
 ## Current Feature Status
 
-### Implemented
-- [x] Create, edit, and delete notes
-- [x] Markdown editor with live preview
-- [x] IndexedDB local storage (offline-capable)
-- [x] Note list sidebar with search
-- [x] Tag filtering
-- [x] Pinned notes
-- [x] Keyboard shortcuts (Ctrl+N, Ctrl+S, Ctrl+P)
-
-### In Progress
-- [ ] Export to `.md` file (#23)
-- [ ] Dark mode toggle (#24)
-
-### Planned
-- [ ] Multi-device sync via CouchDB
-- [ ] Collaborative editing
+See `docs/functional-spec.md` § Status. Kept out of CLAUDE.md — it changes weekly and goes stale here.
 
 <!-- ============================================================
      WORKING IN THIS PROJECT
@@ -110,29 +95,31 @@ document.addEventListener('note:selected', (e) => loadNote(e.detail.id));
 
 ## Working in this project
 
+**SDLC profile:** core
+
 This project uses the [sdlc-baseline](https://github.com/Johnesco/sdlc-baseline) universal workflow. Claude must follow these canonical docs:
 
-- [Workflow (7 steps)](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/workflow.md) — ticket-first, documentation-aware
+- [Workflow (7 steps)](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/workflow.md) — ticket-first, decide before you build, documentation-aware
 - [Roles & hat-switch protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/roles.md) — PO / BA / Dev / Documenter / QA
-- [Definition of Done](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md) — exit criteria by issue type
+- [Definition of Done](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md) — exit criteria by issue type, verification-first
 - [Severity & priority matrix](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md)
 - [Commit, PR, and branch conventions](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md)
-- [Release management](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md) — versioning, changelogs, hotfixes, milestones
-- [Deployment](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md) — deploy patterns, environments, config/secrets, rollback
-- [CI/CD](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md) — GitHub Actions, starter workflows, branch protection
+- [Release management](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md) — versioning, build numbers, changelogs, hotfixes, milestones
+- [Testing](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/testing.md) — testing strategy and the local gate
 - [Backlog hygiene](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md) — review cadence, grooming, planning without sprints
-- [Incident response](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md) — production incidents: restore, investigate, prevent
-- [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md)
+- [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md) — the six-line stub, threshold rule
+- [Profiles](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/profiles.md) — what this profile requires and relaxes
 
 **The Functional Specification** (`docs/functional-spec.md`) is this project's authoritative behavior record. CLAUDE.md and README.md are secondary but must stay consistent.
 
-**Two non-negotiables:**
+**Three non-negotiables:**
 
-1. **No code without a ticket.** Every change starts as a GitHub Issue. Add it to the project board immediately:
+1. **No code without a ticket.** An Issue — or, for a decision, an ADR stub. This project uses a board, so add it immediately:
    ```
    gh project item-add 2 --owner notekeeper-dev --url [ISSUE_URL]
    ```
-2. **Claude cannot QA its own work.** The Verify column is always human-owned.
+2. **Decide before you build.** Anything above a tuning tweak — more than one file, or a behaviour change — gets a six-line ADR stub (Context + Decision) before code.
+3. **Claude cannot QA its own work.** The Verify column is always human-owned.
 
 When sdlc-baseline updates, glance at its [CHANGELOG](https://github.com/Johnesco/sdlc-baseline/blob/main/CHANGELOG.md) before adopting changes here.
 
@@ -142,7 +129,7 @@ This project intentionally diverges from canonical sdlc-baseline guidance in the
 
 - _(none)_
 
-### Project IDs
+### Project IDs (this project uses a board)
 
 - **Project board:** `PVT_examplePLACEHOLDER`
 - **Status field:** `PVTSSF_examplePLACEHOLDER`
@@ -167,12 +154,12 @@ This project intentionally diverges from canonical sdlc-baseline guidance in the
 
 ### Architecture Decisions
 
-Recorded as ADRs in [`docs/adr/`](docs/adr/). See [`docs/adr/README.md`](docs/adr/README.md) for the index. Format and threshold rule documented in [sdlc-baseline `docs/adrs.md`](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md).
+Recorded as ADRs in `docs/adr/` (index: `docs/adr/README.md`). Format, stub and threshold rule: [sdlc-baseline `docs/adrs.md`](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md).
 
 For example:
-- [ADR-001](docs/adr/001-vanilla-js.md) — Vanilla JS, no framework
-- [ADR-002](docs/adr/002-indexeddb-storage.md) — IndexedDB over localStorage
-- [ADR-003](docs/adr/003-marked-via-cdn.md) — marked.js via CDN, no build step
+- ADR-001 — Vanilla JS, no framework
+- ADR-002 — IndexedDB over localStorage
+- ADR-003 — marked.js via CDN, no build step
 
 (Pre-ADR decisions previously listed inline can be backfilled as ADRs if they meet the threshold rule.)
 

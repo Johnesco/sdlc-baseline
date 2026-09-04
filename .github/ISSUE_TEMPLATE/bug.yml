@@ -28,11 +28,12 @@ body:
     attributes:
       label: Severity
       description: How impactful is this bug?
+      # Keep these four strings in sync with docs/severity-matrix.md ("Severity Levels" table).
       options:
         - Low — Cosmetic or minor inconvenience
-        - Medium — Feature works but with issues
-        - High — Feature is broken for some users
-        - Critical — System is down or data is at risk
+        - Medium — Feature works but with significant issues
+        - High — Major feature is broken, no workaround
+        - Critical — System is down, data loss, or security vulnerability
   - type: textarea
     id: environment
     attributes:

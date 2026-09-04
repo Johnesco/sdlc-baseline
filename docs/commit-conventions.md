@@ -1,5 +1,7 @@
 # Commit and Branch Conventions
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 Consistent naming for commits, pull requests, and branches.
 
 ---
@@ -13,6 +15,7 @@ Consistent naming for commits, pull requests, and branches.
 ```
 
 - `#XX` is the GitHub Issue number
+- When the ticket is an ADR stub (core), reference it the same way: `ADR-012: Shelve ghost race behind a flag`
 - Description is imperative mood ("Add feature", not "Added feature")
 - Keep the first line under 72 characters
 - No period at the end
@@ -54,12 +57,16 @@ When an AI assistant writes or significantly contributes to a commit, include a 
 ```
 #12: Add user avatar upload component
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 ```
+
+> Claude Code writes this trailer itself, with the model name filled in. Accept whatever it emits — the point is that the trailer exists, not its exact text.
 
 ---
 
 ## Pull Requests
+
+> **Optional in core.** A solo core project may commit straight to `main`. The conventions below apply whenever you do open a PR — and always in core+ops projects with branch protection.
 
 ### Title format
 
@@ -163,6 +170,7 @@ spike/auth-provider-comparison
 | Element | Format | Example |
 |---------|--------|---------|
 | Commit message | `#XX: description` | `#12: Add avatar upload` |
+| Commit (ADR ticket) | `ADR-NNN: description` | `ADR-012: Shelve ghost race` |
 | PR title | `#XX: description` | `#12: Add avatar upload` |
 | PR body keyword | `Fixes #XX` | `Fixes #12` |
 | Branch name | `type/description` | `feature/avatar-upload` |

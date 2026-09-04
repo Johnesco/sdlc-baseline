@@ -1,5 +1,7 @@
 # Security Basics
 
+> **Profile:** core — applies to every project; sections headed `(ops)` apply only to core+ops projects. See [profiles.md](profiles.md).
+
 Practical security habits for a sole developer. This isn't a comprehensive security program — it's the minimum set of practices that prevent the most common vulnerabilities.
 
 ---
@@ -59,7 +61,7 @@ pip-audit                        # Install: pip install pip-audit
 gh api repos/{owner}/{repo}/vulnerability-alerts
 ```
 
-Add `npm audit` (or equivalent) to your CI pipeline — see [ci-cd.md](ci-cd.md#common-additions).
+Add `npm audit` (or equivalent) to your gate — the local test command (core), or CI (core+ops, see [ci-cd.md](ci-cd.md#common-additions)).
 
 ### Update strategy
 
@@ -100,7 +102,7 @@ element.innerHTML = userInput;
 element.textContent = userInput;
 ```
 
-### SQL / NoSQL Injection
+### SQL / NoSQL Injection (ops)
 
 **What:** Attacker manipulates database queries through user input.
 
@@ -116,7 +118,7 @@ db.query(`SELECT * FROM users WHERE id = ${userId}`);
 db.query('SELECT * FROM users WHERE id = $1', [userId]);
 ```
 
-### Cross-Site Request Forgery (CSRF)
+### Cross-Site Request Forgery (CSRF) (ops)
 
 **What:** Attacker tricks a logged-in user's browser into making unwanted requests to your app.
 
@@ -125,7 +127,7 @@ db.query('SELECT * FROM users WHERE id = $1', [userId]);
 - Set `SameSite=Strict` or `SameSite=Lax` on cookies
 - Require re-authentication for sensitive operations
 
-### Insecure Direct Object References (IDOR)
+### Insecure Direct Object References (IDOR) (ops)
 
 **What:** User accesses another user's data by guessing or changing an ID in the URL.
 
@@ -136,7 +138,7 @@ db.query('SELECT * FROM users WHERE id = $1', [userId]);
 
 ---
 
-## HTTPS and Transport Security
+## HTTPS and Transport Security (ops)
 
 ### Rules
 
@@ -162,7 +164,7 @@ If your frontend calls a third-party API directly:
 
 ---
 
-## Authentication (When You Need It)
+## Authentication (ops)
 
 If your app has user accounts:
 
@@ -205,7 +207,7 @@ When reviewing your own code (or having AI review it), check for:
 - [ ] API endpoints check authorization, not just authentication
 - [ ] Error messages don't leak internal details (stack traces, DB schema, file paths)
 
-### Production monitoring
+### Production monitoring (ops)
 
 See [incident-response.md](incident-response.md) for monitoring setup. Security-specific additions:
 
@@ -222,13 +224,13 @@ Run through this when setting up a new project (or audit an existing one):
 - [ ] `.env` is in `.gitignore`
 - [ ] `.env.example` exists with variable names (no real values)
 - [ ] No secrets in the codebase (`git log --all -p | grep -i "api_key\|secret\|password\|token"`)
-- [ ] HTTPS configured (most platforms do this automatically)
-- [ ] Security headers set (CSP, HSTS, X-Content-Type-Options)
+- [ ] HTTPS configured (most platforms do this automatically) (ops)
+- [ ] Security headers set (CSP, HSTS, X-Content-Type-Options) (ops)
 - [ ] User input is escaped/sanitized everywhere it's rendered
-- [ ] Database queries use parameterization
+- [ ] Database queries use parameterization (ops)
 - [ ] Dependencies are current (`npm audit` or equivalent)
 - [ ] Dependabot alerts enabled in GitHub repo settings
-- [ ] Auth uses a third-party provider (if applicable)
+- [ ] Auth uses a third-party provider (if applicable) (ops)
 
 ---
 
@@ -242,9 +244,9 @@ Security isn't a separate phase — it's baked into every step:
 | **Step 5 (Implement)** | Follow the prevention patterns above |
 | **Step 7 (Verify)** | Include the security review habits checklist |
 | **Definition of Done** | "No regressions" includes security regressions |
-| **CI/CD** | `npm audit` in the pipeline catches dependency vulnerabilities |
-| **Incident response** | Security incidents follow the same restore → investigate → prevent sequence |
-| **Deployment** | Secrets in environment variables, not code |
+| **CI/CD** | (ops) `npm audit` in the pipeline catches dependency vulnerabilities |
+| **Incident response** | (ops) Security incidents follow the same restore → investigate → prevent sequence |
+| **Deployment** | (ops) Secrets in environment variables, not code |
 
 ---
 

@@ -1,5 +1,7 @@
 # How to Consume sdlc-baseline
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 > **Treat sdlc-baseline as a library, not a starter kit.** A starter kit is copied once and forgotten. A library is referenced and updated. The first model produces drift; the second produces signal.
 
 This doc tells downstream projects what to **vendor** (copy locally), what to **reference** (link to canonical), and what is **project-only** (never upstream).
@@ -39,6 +41,7 @@ You cannot reference these. They have to be copies. **This is the only category 
 | `.github/PULL_REQUEST_TEMPLATE.md` | sdlc-baseline `.github/PULL_REQUEST_TEMPLATE.md` | project `.github/PULL_REQUEST_TEMPLATE.md` | GitHub UI |
 | `scripts/setup-labels.sh` | sdlc-baseline `scripts/setup-labels.sh` | project `scripts/setup-labels.sh` | Runs against consuming repo |
 | `CLAUDE.md` skeleton | sdlc-baseline `CLAUDE-TEMPLATE.md` | project `CLAUDE.md` | Claude Code reads it; copy once and customize |
+| `scripts/sync-github-templates.sh` | sdlc-baseline `scripts/` | project `scripts/` | Runs from the consuming repo; keeps the rows above current |
 
 The `scripts/sync-github-templates.sh` helper (also in this repo) automates the first three. Run it after sdlc-baseline updates, review the diff, commit the result.
 
@@ -48,25 +51,28 @@ The `scripts/sync-github-templates.sh` helper (also in this repo) automates the 
 
 These docs live canonically in sdlc-baseline. Downstream projects link to them from their `CLAUDE.md`. **Never paste their contents into a downstream repo.**
 
-| Artifact | Canonical URL |
-|---|---|
-| 7-step workflow | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/workflow.md |
-| Roles | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/roles.md |
-| Definition of Done | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md |
-| Severity matrix | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md |
-| Commit / branch conventions | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md |
-| Board setup | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/board-setup.md |
-| Labels | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/labels.md |
-| Release management | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md |
-| Deployment | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md |
-| CI/CD | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md |
-| Backlog hygiene | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md |
-| Incident response | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md |
-| Kickoff checklist | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/kickoff-checklist.md |
-| Security basics | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/security-basics.md |
-| ADR protocol | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md |
-| ADR template | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-template.md |
-| ADR worked example | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-example.md |
+| Artifact | Profile | Canonical URL |
+|---|---|---|
+| Profiles | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/profiles.md |
+| 7-step workflow | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/workflow.md |
+| Roles | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/roles.md |
+| Definition of Done | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/definition-of-done.md |
+| Severity matrix | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md |
+| Commit / branch conventions | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md |
+| Board setup | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/board-setup.md |
+| Labels | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/labels.md |
+| Release management | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md |
+| Testing | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/testing.md |
+| Backlog hygiene | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md |
+| Kickoff checklist | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/kickoff-checklist.md |
+| Security basics | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/security-basics.md |
+| ADR protocol | core | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md |
+| ADR stub | core | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-stub.md |
+| ADR template | core | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-template.md |
+| ADR worked example | core | https://github.com/Johnesco/sdlc-baseline/blob/main/examples/adr-example.md |
+| Deployment | ops | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md |
+| CI/CD | ops | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md |
+| Incident response | ops | https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md |
 
 If you find yourself wanting to paste any of these into a downstream `CLAUDE.md` or `docs/` folder, **stop and link instead**.
 
@@ -84,6 +90,7 @@ These belong in each consuming project. sdlc-baseline cannot have opinions about
 - Project-specific data formats / schemas
 - Project-specific milestones
 - Project-specific GitHub Project IDs and field IDs
+- `VERSION` / `BUILD` (or the `package.json` fields) — the project's version source of truth
 - "Project-specific deviations" — anywhere your project intentionally diverges from sdlc-baseline canonical guidance
 
 ---
@@ -113,6 +120,8 @@ A sketch:
 
 ## Working in this project
 
+**SDLC profile:** core
+
 This project uses the [sdlc-baseline](https://github.com/Johnesco/sdlc-baseline)
 universal workflow. Read the canonical docs:
 
@@ -122,17 +131,21 @@ universal workflow. Read the canonical docs:
 - [Severity matrix](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/severity-matrix.md)
 - [Commit / branch conventions](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/commit-conventions.md)
 - [Release management](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/release-management.md)
+- [Testing](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/testing.md)
+- [Backlog hygiene](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md)
+- [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md)
+- [Profiles](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/profiles.md)
+<!-- ops block — delete if core -->
 - [Deployment](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/deployment.md)
 - [CI/CD](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/ci-cd.md)
-- [Backlog hygiene](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/backlog-hygiene.md)
 - [Incident response](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/incident-response.md)
-- [ADR protocol](https://github.com/Johnesco/sdlc-baseline/blob/main/docs/adrs.md)
+<!-- end ops block -->
 
 ### Project-specific deviations
 
 <None — fill in any place this project intentionally differs from canonical.>
 
-### Project IDs
+### Project IDs (if you use a board)
 
 - GitHub Project board: PVT_…
 - Status field: PVTSSF_…
@@ -206,4 +219,4 @@ Karaokedirectory is the seminal example — see issue [#57](https://github.com/J
 
 - **Not enforcement.** Nothing here is policed by CI. The discipline is human + AI.
 - **Not exhaustive.** New artifacts may need to be categorized; default to *reference* unless GitHub's tooling forces vendoring.
-- **Not stable forever.** When sdlc-baseline grows beyond ~20 docs, this consumption model itself may need to evolve. Until then, links are enough.
+- **Not stable forever.** The profile split ([profiles.md](profiles.md)) is the first evolution of this model: docs are tagged, not moved, so every link stays valid. If the count keeps growing past ~20, the next step is per-profile link blocks, not a reorganisation.

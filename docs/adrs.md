@@ -1,5 +1,7 @@
 # Architecture Decision Records (ADRs)
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 A short, immutable doc that captures *why* you made an architectural choice — written at the moment of the decision, not in hindsight. The format was popularized by [Michael Nygard in 2011](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions).
 
 Code shows *what*; commit messages show *what changed*; ADRs show *why*. Without them, every architectural question becomes an archaeology dig through Slack and PRs.
@@ -14,9 +16,31 @@ Write an ADR when **any two** of the following are true:
 - Reasonable contributors would consider alternatives
 - Future contributors will second-guess it without context
 
-**Don't ADR:** naming conventions, formatter choice, library picks under 30 minutes of switching cost, anything reversible in a single PR.
+**Don't ADR:** naming conventions, formatter choice, library picks under 30 minutes of switching cost, anything reversible in a single change.
 
 If you're unsure, err on the side of writing one — they're cheap. A 60-second ADR that exists beats a perfect ADR you didn't write.
+
+---
+
+## The six-line stub — decide before you build
+
+Anything above a tuning tweak — it touches more than one file, or it changes behaviour — gets an ADR stub **before code**: a title, status and date, a Context paragraph, a Decision paragraph. Six lines ([`examples/adr-stub.md`](../examples/adr-stub.md)):
+
+```markdown
+# ADR-012: Practice run replaces ghost race
+**Status:** Proposed · **Date:** 2026-06-25 · **Issue(s):** #88
+## Context
+The ghost replays the road faithfully but not the traffic, so racing it isn't fair — and players notice.
+## Decision
+Shelve the hologram behind a flag and ship a solo timed run on the same scaffolding.
+```
+
+**If you can't write the Decision paragraph, it isn't ready.** That is the test — not the file. The stub is the cheapest way to discover you are about to build something you haven't decided.
+
+- The stub is `Proposed`. When the work lands (Step 6), add **Consequences**, set **Accepted**, and add it to the index. The one-line header is equivalent to the template's bullet list — keep whichever you have.
+- Not every stub meets the [threshold rule](#threshold-rule--when-to-write-one). Those can stay as stubs or be folded into the ticket; the value was in writing it.
+- In **core** projects the stub is a valid ticket: Step 1 of the [workflow](workflow.md) accepts an Issue (always, for bugs) or an ADR stub (for decisions). Commits reference it as `ADR-012: description`.
+- Tuning tweaks — a constant, a colour, copy — need no stub. Bug fixes need no stub unless the fix implies a rule (see "What doesn't need an ADR").
 
 ---
 
@@ -42,7 +66,7 @@ The choice, stated plainly.
 What becomes easier. What becomes harder. What you've accepted.
 ```
 
-A copy-paste skeleton lives at [`examples/adr-template.md`](../examples/adr-template.md). A worked example lives at [`examples/adr-example.md`](../examples/adr-example.md).
+A copy-paste skeleton lives at [`examples/adr-template.md`](../examples/adr-template.md). A worked example lives at [`examples/adr-example.md`](../examples/adr-example.md). The six-line stub lives at [`examples/adr-stub.md`](../examples/adr-stub.md).
 
 ---
 
@@ -110,8 +134,10 @@ Format: see [sdlc-baseline `docs/adrs.md`](https://github.com/Johnesco/sdlc-base
 
 ADRs are woven into the 7-step ticket-first workflow:
 
+- **Step 1 (Capture)** — in core, an ADR stub can *be* the ticket for a decision.
 - **Step 2 (Review Documentation)** — check `docs/adr/` for prior decisions on the affected area before scoping work.
-- **Step 6 (Update Documentation)** — if your change makes a decision that meets the threshold rule, write a new ADR in the same PR.
+- **Step 4 → 5 (the gate)** — the stub exists before any code is written.
+- **Step 6 (Update Documentation)** — complete the ADR (Consequences, Status → Accepted) in the same change.
 - **Definition of Done** — for architecture-touching changes, an ADR (or an explicit "no ADR needed" justification) is part of the checklist.
 
 See [`docs/workflow.md`](workflow.md) and [`docs/definition-of-done.md`](definition-of-done.md).

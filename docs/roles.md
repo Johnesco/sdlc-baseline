@@ -1,5 +1,7 @@
 # Roles and AI Collaboration Model
 
+> **Profile:** core — applies to every project. See [profiles.md](profiles.md).
+
 This document defines the roles in the development workflow and how they map to a solo developer working with an AI coding assistant.
 
 ---
@@ -202,3 +204,7 @@ This role model works even without an AI assistant. As a solo developer, you wea
 - **QA hat:** Test it with fresh eyes (step away, come back, test like a user)
 
 The roles exist to prevent the most common solo-dev failure mode: jumping straight from idea to code and never documenting, testing, or verifying.
+
+### One person, all hats — without a board (core)
+
+The board is optional in core. Without one, the columns are still the states a ticket passes through — Backlog → Ready → In Progress → Verify → Done — you just don't drag cards; the hat you're wearing tells you which state you're in. The one that doesn't relax: **Verify is a separate act.** Step away, come back, test like a user, then close the ticket.

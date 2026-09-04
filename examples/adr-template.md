@@ -1,3 +1,5 @@
+<!-- Full ADR skeleton. The six-line stub written BEFORE code is examples/adr-stub.md — start there, expand to this when the work lands. -->
+
 # ADR-NNN: <short noun-phrase title>
 
 - **Status:** Proposed | Accepted | Deprecated | Superseded by ADR-XXX
