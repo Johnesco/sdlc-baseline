@@ -10,7 +10,12 @@
 
 ## [Unreleased]
 
-_(nothing yet)_
+### Added
+- **`scripts/check-docs.py` — the repo's own gate.** Nine deterministic checks over the standard's structure: relative links and `#anchors` (markdown *and* html), orphaned files in `docs/`, one profile badge on line 3 of every doc, the ops-doc set, the **published URL contract** downstream repos link to, severity-string sync between `docs/severity-matrix.md` and `.github/ISSUE_TEMPLATE/bug.yml`, `CLAUDE-TEMPLATE.md` integrity, and forbidden hygiene patterns. Standard library only — no network, no dependencies, no model in the loop. Every check was verified to fail when its invariant is broken.
+- **`CLAUDE.md`** — sdlc-baseline now declares its own profile (`core`) and names its gate, instead of being the only project held to this standard that never adopted it.
+
+### Changed
+- `docs/testing.md` gains **"The gate must be deterministic"** (no model, no network, no clock, a real exit code — *Claude cannot QA its own work* applied to the gate itself) and **"When the project isn't code"**, using this repo as the worked example of a prose project with a testable contract.
 
 ---
 

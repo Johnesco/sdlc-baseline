@@ -246,6 +246,20 @@ Pavement Pursuit (private repo) — a browser racing game shipped to itch.io as 
 
 ---
 
+## Working on this repo
+
+sdlc-baseline is held to its own standard: profile `core`, no board, no CI, one local gate.
+
+```bash
+python scripts/check-docs.py        # -v to show what each check verified
+```
+
+Nine deterministic checks — link and anchor integrity across markdown and html, orphaned docs, profile badges, the ops-doc set, the **published URL contract** that downstream repos depend on, severity-string sync between `docs/severity-matrix.md` and `.github/ISSUE_TEMPLATE/bug.yml`, `CLAUDE-TEMPLATE.md` integrity, and hygiene patterns that have shipped from here before.
+
+Standard library only: no network, no dependencies, no model in the loop. Green before any release.
+
+---
+
 ## License
 
 [MIT](LICENSE) — Use it, adapt it, make it yours.

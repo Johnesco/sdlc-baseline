@@ -17,7 +17,7 @@ Even without automated tests, this process gives you:
 - **Manual test steps** in the Test Plan field of feature issues
 - **Human verification** in the Verify column (QA role)
 - **Definition of Done** checklists that include regression checking
-- **A gate** — the local test command (core), or CI (core+ops — see [`ci-cd.md`](ci-cd.md))
+- **A gate** — the local test command (core), or CI (core+ops — see [`ci-cd.md`](ci-cd.md)). It must be deterministic: no model, no network, a real exit code
 
 ---
 
@@ -31,6 +31,52 @@ Core projects have no CI to stop a bad release. The gate is **one command, run l
 4. **Say what you ran.** The Definition of Done asks how "no regressions" was verified. "Ran `npm test`, 17 suites green" is an answer; "should be fine" is not.
 
 That's the whole gate. When the project grows a service, CI runs the same command — see [`ci-cd.md`](ci-cd.md).
+
+### The gate must be deterministic
+
+A gate that needs judgment is not a gate. Whatever the command runs, it has to
+give the same answer on the same input, every time, with nothing in the loop
+that can have an opinion:
+
+- **No model.** An AI assistant is a superb reviewer and a worthless gate. It
+  cannot be a check on its own work — that is the same rule as *Claude
+  cannot QA its own work*, applied one level up. "I read it and it looked fine"
+  is not a passing test, whoever said it.
+- **No network.** A check that fails when the wifi drops trains you to ignore
+  failures, and an ignored gate is no gate.
+- **No clock, no randomness, no machine-specific paths.** A test that behaves
+  differently on Tuesday or on someone else's laptop is worse than no test,
+  because it produces failures you learn to wave through.
+- **A real exit code.** 0 or non-zero. Anything that only prints is advice.
+
+The payoff is that red always means something changed. You never have to wonder
+whether the gate is having a bad day, so you never develop the habit of
+re-running it until it passes.
+
+### When the project isn't code
+
+Prose, schemas and configuration have contracts too, and they rot in silence
+because nothing compiles them. Ask what would break someone else if it changed
+without anyone noticing, then assert exactly that.
+
+This repository is the worked example. `python scripts/check-docs.py` is its
+whole gate, and it asserts things a careful reader misses:
+
+| Check | The failure it prevents |
+|-------|-------------------------|
+| Links and anchors resolve | A standard nobody can navigate |
+| No orphaned files | A doc that sat unreferenced for months |
+| Profile badge on line 3 of every doc | The profile mechanism silently not applying |
+| The published URL contract still exists | Renaming a heading 404s links in *other people's repos*, with no error anywhere |
+| Two copies of the severity strings agree | Duplication GitHub forces, drifting apart |
+| No machine paths, frozen dates, pinned model names | Things that have shipped from here before |
+
+None of that needs a test framework. It needs one script, in whatever language
+is already on the machine, that exits non-zero when an invariant breaks.
+
+**The rule of thumb:** every time you write down a rule, ask whether a script
+could check it. If it can and you don't, the rule has already started drifting —
+you just won't find out for a few months.
 
 ---
 
