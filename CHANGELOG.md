@@ -17,6 +17,9 @@
 ### Changed
 - `docs/testing.md` gains **"The gate must be deterministic"** (no model, no network, no clock, a real exit code — *Claude cannot QA its own work* applied to the gate itself) and **"When the project isn't code"**, using this repo as the worked example of a prose project with a testable contract.
 
+### Fixed
+- **Windows checkouts stay LF (#7).** A root `.gitattributes` (`* text=auto eol=lf`) overrides Git for Windows' default `core.autocrlf=true`. Before this, Windows clones got CRLF working copies, `cp` carried them into consuming repos, and `sync-github-templates.sh --check` then reported every vendored file as changed. **Downstream:** add the same line to your own `.gitattributes`; `docs/kickoff-checklist.md` Phase 1 now includes it. **Windows clones of sdlc-baseline:** new clones are already LF. For an older clone with no uncommitted changes, run `git rm -r --cached . && git reset --hard` once to rewrite it.
+
 ---
 
 ## [v0.5.0] — 2026-09-03

@@ -81,6 +81,12 @@ After this first session, every future session reads CLAUDE.md and knows the pro
 
 - [ ] **Create .gitignore** — include `.env`, `.env.local`, IDE files, OS files, build output.
 
+- [ ] **Create .gitattributes** — one line keeps every checkout LF, on every OS:
+  ```gitattributes
+  * text=auto eol=lf
+  ```
+  Git for Windows defaults to `core.autocrlf=true`, which checks out the vendored files as CRLF. `sync-github-templates.sh --check` compares them byte for byte with upstream, so without this line every one of them reports as changed. Add exceptions if you need them, e.g. `*.bat text eol=crlf`.
+
 - [ ] **Create .env.example** (if the project will have any configuration)
   ```bash
   # .env.example — committed, no real values
@@ -144,6 +150,8 @@ Adopting this SDLC in a project that already has code and possibly some issues.
 - [ ] **Create CLAUDE.md** from the template — fill in the project-specific sections with what you already know. This is the most valuable single step.
 
 - [ ] **Copy .github/ templates** — issue templates and PR template. These start working immediately for new issues.
+
+- [ ] **Add the `.gitattributes` line** from [New Project, Phase 1](#phase-1-repository-and-structure-30-minutes), unless the repo already sets line endings.
 
 - [ ] **Create labels** — run `setup-labels.sh`. If you have existing labels you want to keep, review the script first to avoid duplicates.
 

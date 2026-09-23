@@ -1,0 +1,4 @@
+# LF in every checkout, on every OS. Git for Windows defaults to core.autocrlf=true,
+# which would check these files out as CRLF. Downstream repos copy .github/ and
+# scripts/ from here, and sync-github-templates.sh --check compares them byte for byte.
+* text=auto eol=lf
