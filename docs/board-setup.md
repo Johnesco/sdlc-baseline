@@ -24,13 +24,14 @@ Step-by-step guide to creating the 5-column kanban board that drives this workfl
 4. Name it (e.g., your project name)
 5. Click **Create project**
 
-Or via CLI:
+Or via CLI. The second command links the board to your repo so it shows up under the repo's **Projects** tab:
 
 ```bash
 gh project create --owner [YOUR_USERNAME] --title "[Project Name]"
+gh project link [PROJECT_NUMBER] --owner [YOUR_USERNAME] --repo [REPO_NAME]
 ```
 
-> Note the project number that's returned — you'll need it for `gh project item-add`.
+> Note the project number that's returned — you'll need it for `gh project item-add`. A project created from the CLI starts as a table; [Step 2's CLI path](#or-via-cli) switches it to a board.
 
 ---
 
@@ -55,11 +56,62 @@ Add these columns between the existing ones (click **+** to add):
 Backlog → Ready → In Progress → Verify → Done
 ```
 
+### Or via CLI
+
+`gh` has no command for editing a field's options, but the GraphQL API does. The list you send replaces the field's options. If you pass the existing IDs for Todo, In Progress and Done, those options are renamed in place; any option you leave out is deleted. GitHub's default automations point at options by ID, so keeping the IDs keeps them working: *Item added to project* lands new items in Backlog.
+
+```bash
+OWNER=[YOUR_USERNAME]; NUMBER=[PROJECT_NUMBER]
+status_field() { gh project field-list "$NUMBER" --owner "$OWNER" --format json --jq ".fields[] | select(.name==\"Status\") | $1"; }
+FIELD=$(status_field .id)
+TODO=$(status_field '.options[] | select(.name=="Todo") | .id')
+DOING=$(status_field '.options[] | select(.name=="In Progress") | .id')
+DONE=$(status_field '.options[] | select(.name=="Done") | .id')
+
+if [ -n "$TODO" ] && [ -n "$DOING" ] && [ -n "$DONE" ]; then
+  gh api graphql -f field="$FIELD" -f todo="$TODO" -f doing="$DOING" -f done="$DONE" -f query='
+    mutation($field: ID!, $todo: String!, $doing: String!, $done: String!) {
+      updateProjectV2Field(input: {fieldId: $field, singleSelectOptions: [
+        {id: $todo,  name: "Backlog",     color: GRAY,   description: "Captured; refinement happens here"},
+        {            name: "Ready",       color: BLUE,   description: "Ready to build"},
+        {id: $doing, name: "In Progress", color: YELLOW, description: "Actively being coded"},
+        {            name: "Verify",      color: ORANGE, description: "Awaiting human testing"},
+        {id: $done,  name: "Done",        color: GREEN,  description: "Verified and accepted"}
+      ]}) { projectV2Field { ... on ProjectV2SingleSelectField { options { name } } } }
+    }'
+else
+  echo "Status doesn't have the default Todo / In Progress / Done options; nothing changed."
+fi
+```
+
+Then switch the default table view to a board. It groups by Status:
+
+```bash
+PROJECT_ID=$(gh project view "$NUMBER" --owner "$OWNER" --format json --jq .id)
+VIEW=$(gh api graphql -f id="$PROJECT_ID" --jq '.data.node.views.nodes[0].id' -f query='
+  query($id: ID!) { node(id: $id) { ... on ProjectV2 { views(first: 1) { nodes { id } } } } }')
+gh api graphql -f view="$VIEW" -f query='
+  mutation($view: ID!) {
+    updateProjectV2View(input: {viewId: $view, name: "Board", layout: BOARD_LAYOUT}) { projectV2View { layout } }
+  }'
+```
+
+Worked example: the [karaokeunderground](https://github.com/Johnesco/karaokeunderground) board was set up with these same API calls. The IDs they produced are recorded in its `CLAUDE.md`.
+
 ---
 
 ## Step 3: Set Up Automations
 
-GitHub Projects has built-in workflow automations. Enable these:
+GitHub Projects has built-in workflow automations. Enable these in the UI: the API can list and delete workflows, but it can't create or enable them, and it doesn't show which status each one sets.
+
+What a new board starts with varies. Boards made with `gh project create` have arrived with *Item added to project*, *Item closed* and *Pull request merged* already on and *Item reopened* off. Check before clicking through (`$PROJECT_ID` comes from Step 2's CLI path or Step 5):
+
+```bash
+gh api graphql -f id="$PROJECT_ID" --jq '.data.node.workflows.nodes[] | "\(.name): \(.enabled)"' -f query='
+  query($id: ID!) { node(id: $id) { ... on ProjectV2 { workflows(first: 20) { nodes { name enabled } } } } }'
+```
+
+The list can include workflows this board doesn't need, such as Auto-close issue, Auto-add sub-issues and Pull request linked to issue. Leave them or turn them off. The four below are the ones that matter.
 
 ### Auto-set status when items are added
 1. In the project, click **⋯** (menu) → **Workflows**
@@ -135,6 +187,16 @@ If you skip the `item-add` step:
 
 This is a known GitHub limitation, not a bug. Build it into your muscle memory.
 
+### A new board can look empty
+
+On a brand-new board, `gh project item-list` (and the API's `items` field) can report no items long after `item-add` has succeeded. Check from the issue side instead:
+
+```bash
+gh issue view [ISSUE_NUMBER] --json projectItems
+```
+
+If the output shows the board and a status, the issue is on the board. `item-add` is idempotent, so running it again does no harm, but it won't fix the listing either.
+
 ---
 
 ## Step 5: Find Your Project IDs (Advanced)
@@ -150,7 +212,7 @@ gh project list --owner [YOUR_USERNAME]
 This shows the project number. To get the full node ID (needed for GraphQL):
 
 ```bash
-gh project view [PROJECT_NUMBER] --owner [YOUR_USERNAME] --format json | jq '.id'
+gh project view [PROJECT_NUMBER] --owner [YOUR_USERNAME] --format json --jq '.id'
 ```
 
 ### Get field and option IDs
@@ -158,7 +220,7 @@ gh project view [PROJECT_NUMBER] --owner [YOUR_USERNAME] --format json | jq '.id
 To programmatically move items between columns, you need the Status field ID and option IDs:
 
 ```bash
-gh project field-list [PROJECT_NUMBER] --owner [YOUR_USERNAME] --format json
+gh project field-list [PROJECT_NUMBER] --owner [YOUR_USERNAME] --format json --jq '.fields[] | select(.name=="Status")'
 ```
 
 Look for the "Status" field and note the field ID and each option's ID.
