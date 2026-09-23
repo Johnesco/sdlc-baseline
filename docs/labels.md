@@ -2,7 +2,7 @@
 
 > **Profile:** core — applies to every project. See [profiles.md](profiles.md).
 
-A consistent labeling system for GitHub Issues. Labels are grouped into four categories: **Type**, **Area**, **Priority**, and **Resolution**.
+A consistent labeling system for GitHub Issues. Labels are grouped into five categories: **Type**, **Area**, **Cross-cutting**, **Priority**, and **Resolution**.
 
 ---
 
@@ -35,6 +35,16 @@ Issues get **one or more** area labels to indicate which part of the codebase is
 | `area:design` | `#fbca04` | UI/UX design, styling |
 
 > **Customize these for your project.** Not every project needs all area labels. A frontend-only project might just use `area:components`, `area:views`, `area:styles`. A backend API might use `area:routes`, `area:models`, `area:auth`.
+
+### Cross-cutting Labels
+
+Issues get **zero or more** cross-cutting labels. A cross-cutting label marks who or what a change affects, whatever its type and area. It never replaces them: an accessibility barrier in a form is `bug,area:frontend,accessibility`.
+
+| Label | Color | Description |
+|-------|-------|-------------|
+| `accessibility` | `#f143ab` | Barrier affecting people with disabilities |
+
+> **Why GitHub's label?** GitHub creates `accessibility` on new repositories by default, so the taxonomy adopts GitHub's own name, color and description instead of adding a lookalike. Add other cross-cutting concerns, such as `security` or `performance`, the same way once an issue needs one.
 
 ### Priority Labels
 
@@ -89,6 +99,9 @@ gh label create "area:infra" --color "f9d0c4" --description "CI/CD, deployment, 
 gh label create "area:testing" --color "e6e6e6" --description "Tests, test infrastructure"
 gh label create "area:design" --color "fbca04" --description "UI/UX design, styling"
 
+# Cross-cutting labels
+gh label create "accessibility" --color "f143ab" --description "Barrier affecting people with disabilities"
+
 # Priority labels
 gh label create "priority:high" --color "b60205" --description "Must be addressed soon"
 gh label create "priority:low" --color "c2e0c6" --description "Nice to have, no urgency"
@@ -117,10 +130,11 @@ gh label delete "question" --yes
 gh label delete "wontfix" --yes
 gh label delete "duplicate" --yes
 gh label delete "documentation" --yes
-gh label delete "accessibility" --yes
 ```
 
 > Keep the default `bug` label if its color matches — or delete it and recreate with the color above.
+
+> Keep `accessibility` too. It is also a GitHub default, and it belongs to this taxonomy as a [cross-cutting label](#cross-cutting-labels).
 
 ---
 
@@ -165,6 +179,9 @@ gh issue list --label "area:docs"
 # All spikes
 gh issue list --label "spike"
 
+# All accessibility work (any type, any area)
+gh issue list --label "accessibility"
+
 # All issues closed as won't fix
 gh issue list --state closed --label "resolution:wontfix"
 
@@ -187,7 +204,7 @@ gh label create "area:search" --color "c5def5" --description "Search and filteri
 
 ### Recommended approach
 
-1. Start with Type + Priority + Resolution labels (13 labels)
+1. Start with Type + Priority + Resolution labels, plus `accessibility` (14 labels)
 2. Add Area labels as you create your first few issues
 3. Don't create area labels speculatively — wait until you have an issue that needs one
 4. Keep the total under 30 labels to stay manageable
