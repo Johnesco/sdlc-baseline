@@ -106,7 +106,7 @@ gh label create "resolution:superseded" --color "d1d5db" --description "Replaced
 
 ### Removing GitHub's default labels
 
-New repos come with default labels (`enhancement`, `good first issue`, `help wanted`, etc.) that overlap with this system. Remove them if you prefer a clean slate:
+New repos come with default labels (`enhancement`, `good first issue`, `help wanted`, etc.) that either overlap with this system or sit outside it. Remove them if you prefer a clean slate (`setup-labels.sh --clean` does this):
 
 ```bash
 gh label delete "enhancement" --yes
@@ -117,6 +117,7 @@ gh label delete "question" --yes
 gh label delete "wontfix" --yes
 gh label delete "duplicate" --yes
 gh label delete "documentation" --yes
+gh label delete "accessibility" --yes
 ```
 
 > Keep the default `bug` label if its color matches — or delete it and recreate with the color above.
